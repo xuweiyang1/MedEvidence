@@ -1,0 +1,8 @@
+﻿=== MedEvidence License V2 异常诊断 ===
+运行时间UTC: 2026-10-13T11:30:35+00:00
+项目目录: E:\Download\Agent\MedEvidence
+CDC共 61 条，SHA256诊断分布: {'CRLF_TO_LF': 61}
+PMC冲突文献: 7 篇，许可证节点: 7 条
+PMC作者稿待复核: 8 篇
+说明：字节规范化后哈希匹配，不等于原始文件哈希匹配；不修改原始CSV，也不自动放行HOLD/REVIEW。
+说明：PMC多license节点可能对应不同材料或不同权利，必须检查原文许可作用范围。

@@ -1,0 +1,15 @@
+﻿=== MedEvidence License Gate V2 ===
+生成时间UTC: 2026-10-13T11:23:33+00:00
+项目根目录: E:\Download\Agent\MedEvidence
+文档数: 1013
+总体状态: {'CANDIDATE': 921, 'REVIEW': 8, 'HOLD': 68, 'RESTRICTED': 16}
+来源计数: {'PMC': 936, 'CDC': 61, 'WHO': 16}
+PMC manifest许可证字样: {'CC BY': 936}
+PMC 作者稿数量: 8
+SHA/大小缺失或不符: 61
+重复(source,document_id)数量: 0
+注意：CANDIDATE不是最终合法准入，须人工批准与第三方权利排查。
+注意：WHO NC/SA有单独义务，RESTRICTED不得自动进入通用可再分发索引。
+注意：CDC页面不得被默认全归为公共领域，需检查第三方材料。
+注意：脚本没有修改数据原文及已有licenses/registry.csv。
+异常样本（前20条）: [('CDC-234070', 'data/raw/cdc/cardiovascular/234070_Measure_Your_Blood_Pressure.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-403769', 'data/raw/cdc/cardiovascular/403769_Notes_from_the_Field_Characteristics_of_.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-406067', 'data/raw/cdc/cardiovascular/406067_Prevalence_of_Self_Reported_Hypertension.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-406505', 'data/raw/cdc/cardiovascular/406505_Estimated_Hypertension_Prevalence_Treatm.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-direct_heart_disease_about', 'data/raw/cdc/cardiovascular/direct_heart_disease_about.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-direct_heart_disease_prevention', 'data/raw/cdc/cardiovascular/direct_heart_disease_prevention.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-direct_heart_disease_risk_factors', 'data/raw/cdc/cardiovascular/direct_heart_disease_risk_factors.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-direct_stroke_about', 'data/raw/cdc/cardiovascular/direct_stroke_about.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-227088', 'data/raw/cdc/endocrine_metabolic/227088_Social_Media.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-235606', 'data/raw/cdc/endocrine_metabolic/235606_Living_with_Diabetes.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-281796', 'data/raw/cdc/endocrine_metabolic/281796_A_U_S_Report_Card.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-281797', 'data/raw/cdc/endocrine_metabolic/281797_National_Diabetes_Prevention_Program_Inf.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-281798', 'data/raw/cdc/endocrine_metabolic/281798_Prediabetes_Could_It_Be_You.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-285109', 'data/raw/cdc/endocrine_metabolic/285109_10_Surprising_Things_That_Can_Spike_Your.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-305860', 'data/raw/cdc/endocrine_metabolic/305860_Current_Research_Projects.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-335184', 'data/raw/cdc/endocrine_metabolic/335184_Diabetes_Testing.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-335185', 'data/raw/cdc/endocrine_metabolic/335185_Diabetes_Basics.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-335189', 'data/raw/cdc/endocrine_metabolic/335189_Type_2_Diabetes.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-338616', 'data/raw/cdc/endocrine_metabolic/338616_Prevent_Type_2_Diabetes_Talking_to_Your_.txt', 'MISMATCH', 'NOT_REGISTERED'), ('CDC-405217', 'data/raw/cdc/endocrine_metabolic/405217_Diabetes.txt', 'MISMATCH', 'NOT_REGISTERED')]

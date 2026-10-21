@@ -1,0 +1,11 @@
+{
+  "model": "BAAI/bge-m3",
+  "corpus_sha256": "13e52c1e377ba8c13902d25aea1bedf80d833c75c76ebead5b5265ef423911af",
+  "queries_file": "E:\\Download\\Agent\\MedEvidence\\reports\\dense_v3_2_test_queries.csv",
+  "query_count": 2,
+  "candidate_rows": 20,
+  "topk_papers": 10,
+  "fetch_chunks": 300,
+  "less_than_topk": [],
+  "output": "E:\\Download\\Agent\\MedEvidence\\reports\\dense_v3_2_test_results.csv"
+}

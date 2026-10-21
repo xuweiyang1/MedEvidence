@@ -1,0 +1,25 @@
+﻿=== MedEvidence PMC 图表恢复 V1 ===
+运行时间 UTC: 2026-10-13T12:38:01+00:00
+模式: FULL
+候选文章: 921
+成功: 921
+失败: 0
+表格对象: 2592
+结构化表格: 2590
+仅图片或外链的表格: 2
+未提取出机器可读行的表格: 0
+图形对象: 3210
+图形文件引用数(去重后): 3407
+已有本地文件: 0
+找到官方AWS图片下载URL: 0
+需补查文件URL: 3407
+补充材料引用: 984
+正文交叉引用条数: 10316
+新增图表检索证据单元: 5722
+正文图表合并版文章: 921
+合并后的独立文件: data\processed\enriched\pmc_articles_with_media.jsonl
+合并来源或原因: data\processed\ontology\pmc_articles_disease_mapped.jsonl
+图表清单: data\processed\media\pmc_media.jsonl
+图表文本单元: data\processed\media\pmc_media_evidence.jsonl
+已严格校验 V3 候选状态和 XML SHA256；没有覆盖旧论文JSONL、旧Chunk或许可登记。
+图注不能代替实际图像读数；许可需另外排查第三方图像/表格权益。

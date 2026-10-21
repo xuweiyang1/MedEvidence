@@ -1,0 +1,29 @@
+# 密钥，绝对不能提交
+.env
+.env.*
+!.env.example
+env
+
+# 大数据和生成结果
+data/
+outputs/
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# 编辑器与系统文件
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# 生成压缩包和临时文件
+*.zip
+*.log
+*.tmp

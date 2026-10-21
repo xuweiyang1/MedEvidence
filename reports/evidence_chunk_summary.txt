@@ -1,0 +1,20 @@
+﻿=== MedEvidence OpenMedKB Evidence Chunk V1 ===
+时间UTC: 2026-10-13T12:07:33+00:00
+模式: FULL
+输入JSONL: data\processed\ontology\pmc_articles_disease_mapped.jsonl
+V3候选集文章: 921
+成功处理文章: 921
+生成chunk数: 39892
+摘要chunk数: 3289
+正文chunk数: 36603
+原文文本块数: 41921
+过长而切分的源块数: 6218
+原文字符总数: 31707617
+已覆盖原文字符数: 31707617
+原文段落覆盖率: 100%
+每个chunk原文长度上限: 1200
+Chunk JSONL: data\processed\chunks\pmc_evidence_chunks.jsonl
+逐篇报告: reports\evidence_chunk_report.csv
+MeSH/DO只作为文档级标签，不用于筛掉段落；无标签文章也全部保留。
+此处的100%覆盖率仅指上游已解析的摘要和正文块，不包括被上游跳过的表格/图像/公式等。
+许可证CANDIDATE仅允许受控本地试验，尚未授予公开再分发许可。

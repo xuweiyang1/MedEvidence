@@ -1,0 +1,4 @@
+﻿question_id,query,question_type,required_entities,required_evidence_fields,gold_paper_ids,gold_chunk_ids,answerable,status,notes
+gene_association_001,ABCC8 polymorphism and type 2 diabetes,gene_association,ABCC8;type 2 diabetes,population;genetic_variant;outcome,,,UNCERTAIN,UNVERIFIED,
+renal_function_001,How is eGFR estimated in chronic kidney disease?,diagnostic_measurement,chronic kidney disease;eGFR,creatinine;cystatin C;equation,,,UNCERTAIN,UNVERIFIED,
+table_numeric_001,What renal function values are reported for CKD patients?,table_numeric,chronic kidney disease;eGFR;creatinine,table_header;units;group_definition;footnote,,,UNCERTAIN,UNVERIFIED,

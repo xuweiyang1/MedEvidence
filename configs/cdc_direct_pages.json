@@ -1,0 +1,10 @@
+[
+  {"disease": "renal", "url": "https://www.cdc.gov/kidney-disease/about/index.html"},
+  {"disease": "renal", "url": "https://www.cdc.gov/kidney-disease/prevention/index.html"},
+  {"disease": "renal", "url": "https://www.cdc.gov/kidney-disease/risk-factors/index.html"},
+  {"disease": "renal", "url": "https://www.cdc.gov/kidney-disease/testing/index.html"},
+  {"disease": "cardiovascular", "url": "https://www.cdc.gov/heart-disease/about/index.html"},
+  {"disease": "cardiovascular", "url": "https://www.cdc.gov/heart-disease/risk-factors/index.html"},
+  {"disease": "cardiovascular", "url": "https://www.cdc.gov/heart-disease/prevention/index.html"},
+  {"disease": "cardiovascular", "url": "https://www.cdc.gov/stroke/about/index.html"}
+]

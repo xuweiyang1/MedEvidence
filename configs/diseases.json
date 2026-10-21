@@ -1,0 +1,7 @@
+{
+  "cardiovascular": ["hypertension", "coronary heart disease"],
+  "endocrine_metabolic": ["type 2 diabetes", "thyroid disease"],
+  "respiratory": ["asthma", "chronic obstructive pulmonary disease"],
+  "renal": ["chronic kidney disease"],
+  "infectious": ["pneumonia"]
+}

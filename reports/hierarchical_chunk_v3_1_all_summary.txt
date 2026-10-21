@@ -1,0 +1,19 @@
+﻿=== MedEvidence Hierarchical Evidence Chunk V3.1 关系修复原型验收 ===
+时间UTC: 2026-10-13T15:52:58+00:00
+模式: ALL
+处理文章: 921 / 921
+正文原始字符: 31707617
+正文覆盖字符: 31707617
+正文Chunk: 31267
+表格Chunk: 8128
+图注Chunk: 3131
+表格行覆盖: 43348 / 43348
+超估算token上限的表格块: 179
+父节点: 25676
+目录: data\processed\knowledge\v3_1_all
+逐篇报告: reports\hierarchical_chunk_v3_1_all.csv
+注意：仅保证已解析的摘要/正文字符覆盖及结构化表格行覆盖；图像像素、补充材料未自动解释。
+此阶段为PMC候选文献原型，WHO PDF/CDC TXT须另建解析适配器。
+token数仅为估计值，建立BGE-M3索引前必须用实际tokenizer复核。
+CANDIDATE是本地科研候选，不代表媒体内容具备可再分发授权。
+对原JATS中无直接正文的<body>根节点生成STRUCTURAL_ONLY容器；每条关系在输出前检查有效端点。

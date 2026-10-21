@@ -1,0 +1,140 @@
+{
+  "schema": "MedEvidence_TargetedCandidateAudit_v1",
+  "source_file": "/mnt/data/review_pool.csv",
+  "total_source_rows": 578,
+  "targeted_queries": [
+    "Q06",
+    "Q08",
+    "Q12",
+    "Q13",
+    "Q15"
+  ],
+  "targeted_candidate_rows": 196,
+  "grade_counts_by_query": {
+    "Q06": {
+      "0": 13,
+      "1": 28
+    },
+    "Q08": {
+      "0": 4,
+      "1": 33,
+      "2": 1
+    },
+    "Q12": {
+      "0": 2,
+      "1": 22,
+      "2": 4
+    },
+    "Q13": {
+      "0": 26,
+      "1": 21
+    },
+    "Q15": {
+      "0": 36,
+      "1": 6
+    }
+  },
+  "candidate_counts_by_query": {
+    "Q06": 41,
+    "Q08": 38,
+    "Q12": 28,
+    "Q13": 47,
+    "Q15": 42
+  },
+  "total_grade_3_direct_answers": 0,
+  "total_grade_2_partial_relevance": 5,
+  "important_limitations": [
+    "All suggested grades are provisional and based only on text_excerpt fields in the uploaded candidate pool.",
+    "No candidate was judged a grade-3 direct answer based on the supplied excerpts.",
+    "Q06, Q08, Q13, and Q15 did not show an unambiguous direct answer to the exact question in this candidate pool.",
+    "Q12 contains partial evidence about antiplatelet strategies in AF/PCI or anticoagulated subgroups; it should not be generalized to all ACS patients.",
+    "This audit file does not overwrite the original candidate pool or earlier Qrels.",
+    "Do not present this AI-assisted audit as an independently human-validated gold standard."
+  ],
+  "per_query": {
+    "Q06": {
+      "question": "COPD exacerbation systemic corticosteroids treatment duration",
+      "candidate_rows": 41,
+      "grade_counts": {
+        "0": 13,
+        "1": 28
+      },
+      "grade_2_or_3_count": 0,
+      "grade_3_direct_answer_count": 0,
+      "top_partial_candidates": []
+    },
+    "Q08": {
+      "question": "community acquired pneumonia outpatient antibiotics adults",
+      "candidate_rows": 38,
+      "grade_counts": {
+        "0": 4,
+        "1": 33,
+        "2": 1
+      },
+      "grade_2_or_3_count": 1,
+      "grade_3_direct_answer_count": 0,
+      "top_partial_candidates": [
+        {
+          "chunk_id": "PMC13629826:parent:body:s0003:child:0002",
+          "assistant_review_suggested_grade_0_3": 2,
+          "assistant_review_rationale": "片段给出 CAP 病例中的具体抗菌方案，但属于住院/复杂病例场景，不能直接作为成人门诊首选方案。"
+        }
+      ]
+    },
+    "Q12": {
+      "question": "acute coronary syndrome dual antiplatelet therapy duration",
+      "candidate_rows": 28,
+      "grade_counts": {
+        "0": 2,
+        "1": 22,
+        "2": 4
+      },
+      "grade_2_or_3_count": 4,
+      "grade_3_direct_answer_count": 0,
+      "top_partial_candidates": [
+        {
+          "chunk_id": "PMC13607496:table:jcm-15-07298-t002:rows:0002",
+          "assistant_review_suggested_grade_0_3": 2,
+          "assistant_review_rationale": "片段提供房颤/口服抗凝合并 PCI（部分涉及 ACS）人群的抗血小板治疗时序或疗程，可作为特殊亚组的部分证据，但不能直接外推为一般 ACS 患者的 DAPT 标准疗程。"
+        },
+        {
+          "chunk_id": "PMC13607496:figure:jcm-15-07298-f003:caption",
+          "assistant_review_suggested_grade_0_3": 2,
+          "assistant_review_rationale": "片段提供房颤/口服抗凝合并 PCI（部分涉及 ACS）人群的抗血小板治疗时序或疗程，可作为特殊亚组的部分证据，但不能直接外推为一般 ACS 患者的 DAPT 标准疗程。"
+        },
+        {
+          "chunk_id": "PMC13607496:table:jcm-15-07298-t001:rows:0010",
+          "assistant_review_suggested_grade_0_3": 2,
+          "assistant_review_rationale": "片段提供房颤/口服抗凝合并 PCI（部分涉及 ACS）人群的抗血小板治疗时序或疗程，可作为特殊亚组的部分证据，但不能直接外推为一般 ACS 患者的 DAPT 标准疗程。"
+        },
+        {
+          "chunk_id": "PMC13607496:parent:body:s0011:child:0001",
+          "assistant_review_suggested_grade_0_3": 2,
+          "assistant_review_rationale": "片段提供房颤/口服抗凝合并 PCI（部分涉及 ACS）人群的抗血小板治疗时序或疗程，可作为特殊亚组的部分证据，但不能直接外推为一般 ACS 患者的 DAPT 标准疗程。"
+        }
+      ]
+    },
+    "Q13": {
+      "question": "venous thromboembolism pulmonary embolism anticoagulation duration",
+      "candidate_rows": 47,
+      "grade_counts": {
+        "0": 26,
+        "1": 21
+      },
+      "grade_2_or_3_count": 0,
+      "grade_3_direct_answer_count": 0,
+      "top_partial_candidates": []
+    },
+    "Q15": {
+      "question": "Helicobacter pylori eradication confirm test of cure",
+      "candidate_rows": 42,
+      "grade_counts": {
+        "0": 36,
+        "1": 6
+      },
+      "grade_2_or_3_count": 0,
+      "grade_3_direct_answer_count": 0,
+      "top_partial_candidates": []
+    }
+  }
+}

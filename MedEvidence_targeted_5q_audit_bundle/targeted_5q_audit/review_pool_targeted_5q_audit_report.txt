@@ -1,0 +1,24 @@
+MedEvidence - 5-query targeted candidate audit (AI provisional)
+
+Candidate rows audited: 196
+Queries: Q06, Q08, Q12, Q13, Q15
+
+Provisional grade counts by query:
+- Q06: 41 candidates; grade 0: 13, grade 1: 28
+- Q08: 38 candidates; grade 0: 4, grade 1: 33, grade 2: 1
+- Q12: 28 candidates; grade 0: 2, grade 1: 22, grade 2: 4
+- Q13: 47 candidates; grade 0: 26, grade 1: 21
+- Q15: 42 candidates; grade 0: 36, grade 1: 6
+
+Main findings from the supplied text excerpts:
+- No grade-3 direct answer was identified in the candidate pool.
+- Q06: no direct standard systemic-corticosteroid duration evidence was found.
+- Q08: one grade-2 partial candidate gives an inpatient CAP antibiotic regimen, but it is not outpatient guidance.
+- Q12: four grade-2 partial candidates concern antithrombotic strategy in AF/PCI or oral-anticoagulation subgroups; do not generalize them to all ACS patients.
+- Q13: no clear VTE/PE anticoagulation-duration recommendation was found.
+- Q15: no H. pylori test-of-cure evidence was found; a few candidates only mention H. pylori/eradication in other contexts.
+
+Important limitations:
+- Suggested labels are AI-provisional and based only on text_excerpt in the uploaded review pool.
+- The targeted Qrels covers these five queries only; do not overwrite the original 15-query Qrels.
+- This is not an independently human-validated Gold Qrels set.

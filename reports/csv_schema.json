@@ -1,0 +1,69 @@
+{
+  "pmc_manifest": {
+    "path": "data/raw/pmc/manifest.csv",
+    "exists": true,
+    "headers": [
+      "disease",
+      "pmcid",
+      "version",
+      "license_code",
+      "is_manuscript",
+      "is_retracted",
+      "title",
+      "xml_bytes",
+      "xml_sha256",
+      "downloaded_at",
+      "xml_path",
+      "json_path"
+    ],
+    "rows": 936
+  },
+  "cdc_manifest": {
+    "path": "data/raw/cdc/manifest.csv",
+    "exists": true,
+    "headers": [
+      "disease",
+      "topicid",
+      "media_id",
+      "name",
+      "source_url",
+      "content_url",
+      "txt_chars",
+      "sha256",
+      "retrieved_at",
+      "path"
+    ],
+    "rows": 61
+  },
+  "source_registry": {
+    "path": "licenses/registry.csv",
+    "exists": true,
+    "headers": [
+      "source",
+      "item",
+      "file",
+      "url",
+      "sha256",
+      "bytes",
+      "license",
+      "page",
+      "retrieved_at"
+    ],
+    "rows": 21
+  },
+  "pubmed_meta": {
+    "path": "data/raw/pubmed/pubmed_meta.csv",
+    "exists": true,
+    "headers": [
+      "pmid",
+      "pmcid",
+      "doi",
+      "journal",
+      "year",
+      "pubtypes",
+      "mesh",
+      "title"
+    ],
+    "rows": 931
+  }
+}

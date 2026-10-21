@@ -1,0 +1,17 @@
+{
+  "model": "BAAI/bge-m3",
+  "device": "cuda",
+  "batch_size": 2,
+  "max_length": 768,
+  "use_fp16": true,
+  "corpus": "E:\\Download\\Agent\\MedEvidence\\data\\processed\\knowledge\\v3_2_trial_clean\\retrieval_chunks.jsonl",
+  "corpus_sha256": "13e52c1e377ba8c13902d25aea1bedf80d833c75c76ebead5b5265ef423911af",
+  "docs": "E:\\Download\\Agent\\MedEvidence\\data\\processed\\knowledge\\v3_2_trial_clean\\documents.jsonl",
+  "docs_sha256": "47c3cb0cae7de3f60255fe931764ee5d4797c918e18c16bbbb986bb5dec70926",
+  "dimension": 1024,
+  "count": 42553,
+  "collection": "bge_m3_dense_v3_2_trial_clean",
+  "encoded_seconds": 540.98,
+  "point_count": 42553,
+  "created_at_utc": "2026-10-14T12:19:43.106144+00:00"
+}

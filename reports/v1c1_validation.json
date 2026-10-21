@@ -1,0 +1,50 @@
+{
+  "corpus_version": "v3_2_trial_clean",
+  "created_at_utc": "2026-10-14T13:43:44+00:00",
+  "errors": [],
+  "notes": "旧 Dense 不含完整 Chunk 哈希和模型 revision；即便 ID 一致也不能声称向量逐条可验证。V1c.1 不执行发布。",
+  "release_ready": false,
+  "schema": "MedEvidence_Validation_V1c1",
+  "sections": {
+    "bm25": {
+      "chunk_count": 42553,
+      "corpus_version": "v3_2_trial_clean",
+      "fts_count": 42553,
+      "full_content_verified": true
+    },
+    "dense": {
+      "chunk_count": 42553,
+      "collection": "bge_m3_dense_v3_2_trial_clean",
+      "fingerprints_present": false,
+      "full_point_hashes_present": false,
+      "revision_pinned": false,
+      "scanned_points": 42553,
+      "source_manifest_hash_matched": true
+    },
+    "snapshot": {
+      "chunk_id_set_sha256": "bf55eb0ec41dcbf107cb9c1c76b235e02c6fb5934e362d1b14706b43ef81ca8c",
+      "chunks": 42553,
+      "documents": 922,
+      "sha256": "0cdc3d92788ce729e7d4792b10f0612cc0ca587bf96f5ba9d2bb8a3935f46074"
+    }
+  },
+  "status": "PASS_BUT_NOT_RELEASE_READY",
+  "warnings": [
+    {
+      "code": "LEGACY_DENSE_NO_FULL_CONTENT_HASH",
+      "message": "42553 个向量点缺少完整 content_hash；只能核对旧构建输入文件哈希与正文前1600字符"
+    },
+    {
+      "code": "LEGACY_DENSE_NO_FINGERPRINT",
+      "message": "42553 个向量点缺少 embedding_fingerprint；禁止未经重新验证就复用到其他模型配置"
+    },
+    {
+      "code": "LEGACY_DENSE_REVISION_UNPINNED",
+      "message": "旧版 Dense Manifest 未锁定 model_revision"
+    },
+    {
+      "code": "LEGACY_DENSE_VERSION_UNSTAMPED",
+      "message": "旧版 Dense Manifest 未明确记录 corpus_version；通过 source SHA 与 collection 名间接核对"
+    }
+  ]
+}

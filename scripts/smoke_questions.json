@@ -1,0 +1,22 @@
+[
+  {"id":"Q01","question":"type 2 diabetes chronic kidney disease SGLT2 inhibitor eGFR albuminuria"},
+  {"id":"Q02","question":"hypertension blood pressure target older adults cardiovascular risk"},
+  {"id":"Q03","question":"acute ischemic stroke intravenous thrombolysis eligibility time window"},
+  {"id":"Q04","question":"atrial fibrillation anticoagulation stroke prevention CHA2DS2 VASc"},
+  {"id":"Q05","question":"heart failure reduced ejection fraction beta blocker ARNI MRA SGLT2"},
+  {"id":"Q06","question":"COPD exacerbation systemic corticosteroids treatment duration"},
+  {"id":"Q07","question":"asthma inhaled corticosteroid formoterol reliever adults"},
+  {"id":"Q08","question":"community acquired pneumonia outpatient antibiotics adults"},
+  {"id":"Q09","question":"chronic kidney disease albuminuria ACE inhibitor ARB"},
+  {"id":"Q10","question":"sepsis septic shock antibiotics timing fluid resuscitation"},
+  {"id":"Q11","question":"gestational diabetes screening pregnancy 24 28 weeks"},
+  {"id":"Q12","question":"acute coronary syndrome dual antiplatelet therapy duration"},
+  {"id":"Q13","question":"venous thromboembolism pulmonary embolism anticoagulation duration"},
+  {"id":"Q14","question":"statin therapy secondary prevention atherosclerotic cardiovascular disease"},
+  {"id":"Q15","question":"Helicobacter pylori eradication confirm test of cure"},
+  {"id":"Q16","question":"rheumatoid arthritis methotrexate disease modifying antirheumatic drugs"},
+  {"id":"Q17","question":"osteoporosis fragility fracture bisphosphonate FRAX risk"},
+  {"id":"Q18","question":"HIV antiretroviral therapy initiation adults"},
+  {"id":"Q19","question":"colorectal cancer screening age average risk colonoscopy FIT"},
+  {"id":"Q20","question":"influenza antiviral treatment high risk hospitalized adults"}
+]

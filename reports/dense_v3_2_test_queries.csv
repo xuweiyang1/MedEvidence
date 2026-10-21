@@ -1,0 +1,3 @@
+﻿query_id,query,query_type
+TEST01,Segment Anything in Medical Images MedSAM,known_paper
+TEST02,How does MedSAM perform on medical image segmentation across different modalities,semantic

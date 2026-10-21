@@ -1,0 +1,10 @@
+﻿=== MedEvidence BM25 V1 构建摘要 ===
+文献数量: 921
+Chunk 数量: 42526
+Chunk 类型: {'abstract': 2828, 'body': 28439, 'table': 8128, 'figure_caption': 3131}
+数据库与FTS索引数量一致: YES
+SQLite integrity_check: ok
+索引位置: E:\Download\Agent\MedEvidence\data\processed\index\bm25_v1.sqlite3
+索引字段: title ×2.0; section ×1.3; text ×1.0 (仅实验初值)
+数据范围: PMC CANDIDATE 本地实验；未索引 WHO/CDC
+提醒: 检索相关性不代表医学证据适用性或证据等级。

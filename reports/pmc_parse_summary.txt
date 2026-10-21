@@ -1,0 +1,18 @@
+﻿=== MedEvidence OpenMedKB JATS 标准化 V1 ===
+生成时间UTC: 2026-10-13T11:50:10+00:00
+项目目录: E:\Download\Agent\MedEvidence
+运行模式: FULL
+本次候选输入: 921
+成功解析: 921
+失败/跳过: 0
+成功关联PubMed元数据: 916
+正文sections: 16255
+正文文本块: 39164
+未完整解析的表格: 1666
+未完整解析的图片: 1901
+输出JSONL: data\processed\normalized\pmc_articles.jsonl
+逐篇报告: reports\pmc_parse_report.csv
+仅处理 V3 候选清单；逐篇复核 XML 的 SHA256；不修改任何原始数据/许可表。
+source_topic_tags 是原检索域标签，不是 MeSH/DO 标准疾病实体。
+V1 未提取完整表格、图片、公式、附录；不能将未解析内容视为不存在。
+CANDIDATE 仅用于受控本地实验，不代表版权最终批准或允许公开再分发。

@@ -1,0 +1,60 @@
+{
+  "purpose": "PERFORMANCE_BENCHMARK_ONLY",
+  "reports": [
+    {
+      "sample_size": 1000,
+      "kind_distribution": {
+        "body": 600,
+        "table": 200,
+        "abstract": 100,
+        "figure_caption": 100
+      },
+      "device": "cuda",
+      "model": "BAAI/bge-m3",
+      "batch_size": 2,
+      "max_length": 768,
+      "token_length_min": 32,
+      "token_length_avg": 315.964,
+      "token_length_max": 1052,
+      "truncated_chunks": 12,
+      "truncation_rate": 0.012,
+      "failed_batches": 0,
+      "failed_batch_details": [],
+      "encoded_vectors": 1000,
+      "embedding_dimension": 1024,
+      "encoding_seconds": 40.27004379999926,
+      "chunks_per_second": 24.832354416262604,
+      "peak_gpu_memory_gib": 1.1029677391052246,
+      "estimated_full_corpus_seconds": 1712.5238826387683,
+      "full_corpus_size": 42526
+    },
+    {
+      "sample_size": 5000,
+      "kind_distribution": {
+        "body": 3000,
+        "table": 1000,
+        "abstract": 500,
+        "figure_caption": 500
+      },
+      "device": "cuda",
+      "model": "BAAI/bge-m3",
+      "batch_size": 2,
+      "max_length": 768,
+      "token_length_min": 16,
+      "token_length_avg": 320.009,
+      "token_length_max": 1441,
+      "truncated_chunks": 55,
+      "truncation_rate": 0.011,
+      "failed_batches": 0,
+      "failed_batch_details": [],
+      "encoded_vectors": 5000,
+      "embedding_dimension": 1024,
+      "encoding_seconds": 119.89844360000006,
+      "chunks_per_second": 41.701959173721896,
+      "peak_gpu_memory_gib": 1.1029677391052246,
+      "estimated_full_corpus_seconds": 1019.7602425067205,
+      "full_corpus_size": 42526
+    }
+  ],
+  "note": "性能测试不能用于宣称医学检索质量。"
+}

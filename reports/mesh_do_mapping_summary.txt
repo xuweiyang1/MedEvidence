@@ -1,0 +1,22 @@
+﻿=== MedEvidence OpenMedKB MeSH + Disease Ontology 映射 V1 ===
+生成时间UTC: 2026-10-13T11:58:51+00:00
+运行模式: FULL
+输入文章: 921 / V3候选总数 921
+PubMed关联标记为True: 916
+MeSH原始字段非空: 412
+MeSH Descriptor总数: 31110 (有效UI: 31110)
+MeSH疾病树描述词: 5194
+DOID Term总数: 14854 (obsolete: 2519)
+DOID-MESH显式xref键数: 2569
+疾病映射结果: {'NO_MESH_TERMS': 504, 'MAPPED_DO': 339, 'NO_DISEASE_HEADING': 9, 'NO_PUBMED_METADATA': 5, 'MESH_DISEASE_ONLY': 64}
+关联到至少1个DOID的文章: 339/921
+不同DOID数量: 135
+前15个DOID及文章数: [('DOID:9352', 103), ('DOID:2841', 38), ('DOID:10763', 27), ('DOID:3083', 24), ('DOID:1287', 19), ('DOID:552', 17), ('DOID:9970', 15), ('DOID:0080600', 14), ('DOID:9452', 11), ('DOID:6000', 9), ('DOID:0080208', 9), ('DOID:9744', 8), ('DOID:14221', 7), ('DOID:13276', 7), ('DOID:9351', 6)]
+主题来源分布: {'cardiovascular': 197, 'endocrine_metabolic': 180, 'infectious': 186, 'renal': 168, 'respiratory': 190}
+未识别MeSH词项(去重): 0
+输出JSONL: data\processed\ontology\pmc_articles_disease_mapped.jsonl
+逐篇报告: reports\mesh_do_mapping_report.csv
+未识别词项: reports\mesh_unresolved_terms.csv
+V1仅接受PubMed明确的MeSH descriptor名称/ID，并经DO显式xref映射；不会将下载主题当作标准疾病标签。
+未映射不等于无疾病；可能是MeSH字段编码方式、尚未标引、DO交叉引用覆盖不足等原因。
+CANDIDATE仅表示本地实验候选，未批准公开再分发；原始数据和许可表均未修改。

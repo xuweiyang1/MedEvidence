@@ -1,0 +1,68 @@
+﻿[RESULTS] PMC13631420:parent:body:s0010:child:0001
+parent=PMC13631420:parent:body:s0010
+section=['APOE ε3/ε4 and coronary artery disease', 'Null and contradictory findings']
+However, not all studies confirm APOE as an independent CAD risk factor. Petrovic et al. did not identify APOE polymorphism as an independent predictor of premature CAD in a Slovenian cohort (19), and Pitsavos et al. found no association between APOE genotype, lipid levels, and CAD in Greek patients with familial hypercholesterolemia (48). In the UK Biobank, hazard ratios for CAD in ε3/ε4 relative to ε3/ε3 participants fell within a narrow range around unity (approximately 0.97–1.15), indicating that in a large, population-based European cohort the genotype-specific effect is small enough to be of limited individual predictive value (49). Similarly, in the study of Zeng et al. the ε4/ε4 genotype was not an independent predictor after adjustment (30). These discordant findings underscore the importance of population-specific genetic backgrounds, environmental exposures, risk factor burden, and differences in study design, sample size, and clinical endpoint definition. Taken together, the quantitative evidence is most consistent with a genotype-specific odds ratio in the region of 1.0–1.5 for ε3/ε4 versus ε3/ε3, with the upper end observed in selected non-European populations and in metabolically high-risk subgroups.
+
+
+---
+
+[METHODS] PMC13632097:parent:body:s0003:child:0001
+parent=PMC13632097:parent:body:s0003
+section=['Methods']
+This retrospective, population-based study analyzed nationwide hospital discharge data provided by the Federal Statistical Office of Germany (Statistisches Bundesamt, Destatis).
+
+The dataset comprises all inpatient cases treated in German hospitals and includes diagnostic and procedural coding according to the International Statistical Classification of Diseases and Related Health Problems, 10th Revision, German Modification (ICD-10-GM), as well as the German Operation and Procedure Classification System (OPS). Data were aggregated annually from 2014 to 2023. All records were fully anonymized and contained no patient-identifiable information; therefore, ethical approval and informed consent were not required.
+
+Hospitalizations with a primary diagnosis of cervical, thoracic, or lumbar disc herniation were identified using ICD-10-GM codes M50.+ (cervical) and M51.+ (thoracolumbar). Owing to the ICD-10 coding structure available in the DESTATIS database, thoracic and lumbar disc herniations were analyzed jointly under the M51.+ category.
+
+To restrict the cohort to degenerative etiologies, cases with concomitant diagnoses indicative of infection (M46.*, G06.*), neoplasm (C* or D*), or trauma (S*) were excluded. Patients were stratified according to spinal region (cervical and thoraco
+
+
+---
+
+[SAFETY] PMC13633647:parent:body:s0019:child:0001
+parent=PMC13633647:parent:body:s0019
+section=['Results', 'Adverse events']
+During the 12-week treatment, the adverse events were assessed between groups (Table 6). In sitagliptin + metoprolol group, the adverse events included stomachache (1 case), diarrhea (1 case), nausea (0 case), vomit (0 case), dizzy (0 case), rash (1 case), bradycardia (heart rate at 45–49 times/min, 1 case), cough (1 case), drowsiness (0 case) and tiredness (0 case). In sitagliptin group, the adverse events comprised stomachache (1 case), diarrhea (1 case), nausea (1 case), vomit (2 cases) and dizzy (2 cases). The total incidence of adverse events between groups did not reach statistical significance (Table 6, 19.23 % vs. 26.92 %, p=0.510).
+
+
+---
+
+[LIMITATIONS] PMC13631420:parent:body:s0024:child:0001
+parent=PMC13631420:parent:body:s0024
+section=['Limitations of current evidence']
+Several limitations affect the interpretation of current evidence on APOE ε3/ε4 and CAD. First, most published studies are observational in design—cross-sectional, case-control, or retrospective cohort—and therefore cannot establish causality. Second, sample sizes vary substantially across studies, and a number are likely underpowered to detect genotype-specific effects, particularly for the less common ε4/ε4 genotype.
+
+Third, definitions of CAD and premature CAD differ between studies, including variation in age thresholds, angiographic criteria, and clinical endpoints; these are reported per study in Table 2. Endpoint definitions range from ≥ 50% stenosis on angiography to hospital-record-based diagnoses, and the resulting case populations are not equivalent. Fourth, confounder adjustment is inconsistent. Some studies adjust comprehensively for LDL cholesterol, smoking, diabetes mellitus, hypertension, obesity, and medication use, whereas others do not. As set out in Section 8.1, because lipids lie on the causal pathway, adjusting for them changes the estimand from a total to a direct effect; studies that adjust for lipids and those that do not are estimating different quantities.
+
+
+---
+
+[table] PMC13631420:table:T1:rows:0001
+parent=PMC13631420:table:T1:parent
+section=s0002
+Table 1
+Summary of major APOE isoforms and their cardiovascular relevance.
+Row 1: Isoform/Allele | Typical Lipid Tendency | Potential Cardiovascular Relevance | Selected Ref.
+Row 2: ε2 (ApoE2) | Lower LDL-C; higher TG in some settings; lowest LDL receptor-binding affinity (<2% of ApoE3) | Often considered relatively cardioprotective for LDL-mediated atherosclerosis; risk of type III hyperlipoproteinemia in ε2/ε2 homozygotes with metabolic cofactors | (25,31)
+Row 3: ε3 (ApoE3) | Reference variant; intermediate LDL-C and TG levels | Baseline or intermediate cardiovascular risk; most common isoform worldwide; conventional comparator genotype | (12,16)
+Row 4: ε4 (ApoE4) | Higher LDL-C, total cholesterol and ApoB in most cohorts; lower circulating ApoE concentrations | Associated with CAD, premature CAD, and greater atherosclerosis severity in multiple cohorts; non-lipid effects on inflammation, oxidative stress, macrophage function and endothelial repair are experimentally supported but not validated in human ε3/ε4 carriers (Table 3) | (17,18,30,35–37,41–46)
+
+
+---
+
+[figure_caption] PMC13631420:figure:F1:caption
+parent=PMC13631420:figure:F1:parent
+section=
+Figure 1
+Proposed mechanisms linking the APOE ε3/ε4 genotype to coronary artery disease. Solid arrows denote associations demonstrated in human studies; dashed arrows denote mechanisms supported by experimental (in vitro or animal) evidence only and not validated in human ε3/ε4 carriers. Evidence levels correspond to those graded in Table 3.
+Flowchart illustrating how APOE ε3/ε4 genotype influences atherosclerotic plaque progression, plaque instability, and coronary artery disease through lipid-mediated and non-lipid mechanisms, highlighting traditional cardiovascular risk modifiers and potential clinical relevance.
+
+
+---
+
+[body] PMC13631420:parent:body:s0002:child:0001
+parent=PMC13631420:parent:body:s0002
+section=['Introduction']
+Coronary artery disease is a complex, multifactorial disorder resulting from the interaction of genetic susceptibility, traditional cardiovascular risk factors, environmental exposures, and inflammatory and metabolic pathways. It remains one of the leading contributors to global morbidity and mortality, accounting for over seven million deaths annually despite substantial advances in prevention, diagnosis, and treatment (1–3). Age, sex, hypertension, diabetes mellitus, smoking, obesity, and dyslipidemia remain central to cardiovascular risk stratification, but they do not fully explain interindividual variability in CAD onset, severity, or clinical outcomes (4–6). This discrepancy has intensified interest in genetic markers that may refine risk prediction, particularly in patients with premature disease, a strong family history, or multiple metabolic comorbidities.
+

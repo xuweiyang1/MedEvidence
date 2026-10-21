@@ -1,0 +1,97 @@
+{
+  "query": "segment anything medical images",
+  "generated_at_utc": "2026-10-14T12:02:03+00:00",
+  "search_terms": [
+    "segment",
+    "anything",
+    "medical",
+    "images"
+  ],
+  "core_anchors": [],
+  "priority_phrases": [],
+  "strategy": "STRICT_AND_THEN_CONSTRAINED_PARTIAL",
+  "broad_or_enabled": false,
+  "tier_stats": {
+    "STRICT_AND": {
+      "pool_returned": 27,
+      "selected": 2
+    },
+    "MAJORITY_PARTIAL": {
+      "pool_returned": 2865,
+      "selected": 1
+    }
+  },
+  "top_k": 10,
+  "per_document": 2,
+  "per_section": 1,
+  "result_count": 3,
+  "unique_papers": 2,
+  "note": "These are ranked lexical matches; not validated medical evidence. Scores from different query tiers must not be compared or added to vector scores.",
+  "results": [
+    {
+      "chunk_id": "IMPORT_E6682B7314C1ADEBD029CB8C:parent:body:s0001:child:0002",
+      "document_id": "IMPORT_E6682B7314C1ADEBD029CB8C",
+      "parent_id": "IMPORT_E6682B7314C1ADEBD029CB8C:parent:body:s0001",
+      "content_kind": "body",
+      "section_path": "PDF Page 1",
+      "title": "Segment Anything in Medical Images",
+      "doi": "",
+      "pmid": "",
+      "media_id": "",
+      "bm25_raw": -33.56429949221338,
+      "matched_terms": [
+        "segment",
+        "anything",
+        "medical",
+        "images"
+      ],
+      "matching_tier": "STRICT_AND",
+      "text_preview": "           delivering accurate and efficient segmentation across a wide spectrum of tasks,\n                  MedSAM holds significant potential to expedite the evolution of diagnostic tools\n                       and the personalization of treatment plans.arXiv:2304.12306v3\n\n\n\n                                                       1",
+      "rank": 1,
+      "paper_rank": 1
+    },
+    {
+      "chunk_id": "IMPORT_E6682B7314C1ADEBD029CB8C:parent:body:s0007:child:0002",
+      "document_id": "IMPORT_E6682B7314C1ADEBD029CB8C",
+      "parent_id": "IMPORT_E6682B7314C1ADEBD029CB8C:parent:body:s0007",
+      "content_kind": "body",
+      "section_path": "PDF Page 7",
+      "title": "Segment Anything in Medical Images",
+      "doi": "",
+      "pmid": "",
+      "media_id": "",
+      "bm25_raw": -33.05200318925113,
+      "matched_terms": [
+        "segment",
+        "anything",
+        "medical",
+        "images"
+      ],
+      "matching_tier": "STRICT_AND",
+      "text_preview": "images (more examples are presented in Supplementary Fig. 13). Furthermore,\nwe evaluated MedSAM on the multiple myeloma plasma cell dataset, which repre-\nsents a distinct modality and task in contrast to all previously leveraged validation\ntasks. Although this task had never been seen during training, MedSAM still exhibited\n\n\n\n                                     7",
+      "rank": 2,
+      "paper_rank": 1
+    },
+    {
+      "chunk_id": "PMC13638373:parent:body:s0007:child:0001",
+      "document_id": "PMC13638373",
+      "parent_id": "PMC13638373:parent:body:s0007",
+      "content_kind": "body",
+      "section_path": "Materials and methods > Model details > Basic architecture",
+      "title": "LPC-transformer: a training strategy optimized framework for multiclass pneumonia medical image classification",
+      "doi": "10.3389/fmed.2026.1960913",
+      "pmid": "42839923",
+      "media_id": "",
+      "bm25_raw": -16.6330515484623,
+      "matched_terms": [
+        "segment",
+        "medical",
+        "images"
+      ],
+      "matching_tier": "MAJORITY_PARTIAL",
+      "text_preview": "The Swin-Transformer (20) model, based on windowing, multi-level feature interaction, and a hierarchical attention mechanism, can simultaneously capture both global and local features in medical images and fuse them together. This model uses convolution operations to segment medical images into small patches and project them into high-dimensional vectors, thereby dividing the feature maps into windows. The feature map vectors undergo sequential processing across four stages. Except for the first stage, which performs linear embedding, the remaining stages first perform patch merging and downsampling on adjacent feature map windows, after which the feature map vectors are fed into a Swin-Transformer block for processing. This experiment uses 224 × 224 × 1 lung medical image feature maps (21); the complete processing workflow and the feature map vectors at each stage are shown in Figure 3.",
+      "rank": 3,
+      "paper_rank": 2
+    }
+  ]
+}

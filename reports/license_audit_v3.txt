@@ -1,0 +1,13 @@
+﻿=== MedEvidence License Gate V3: 完整性与许可范围复核 ===
+生成时间UTC: 2026-10-13T11:38:15+00:00
+项目目录: E:\Download\Agent\MedEvidence
+总文档: 1013
+审核状态: {'CANDIDATE': 921, 'REVIEW': 76, 'RESTRICTED': 16}
+分来源状态: {('PMC', 'CANDIDATE'): 921, ('PMC', 'REVIEW'): 15, ('CDC', 'REVIEW'): 61, ('WHO', 'RESTRICTED'): 16}
+CDC完整性状态: {'NORMALIZED_LF_MATCH_RAW_MISMATCH': 61}
+PMC冲突许可范围信号: {'POSSIBLE_ARTICLE_CC_BY_4.0_DATA_CC0': 7}
+PMC本地实验候选清单行数: 921
+CDC字节哈希不同于规范化文本哈希；程序没有覆盖原登记SHA256。
+PMC出现文章CC-BY和数据CC0的信号只使其进入REVIEW，不能自动获得最终批准。
+WHO保持受限制状态；所有CANDIDATE仅表示待人工最终核对的本地实验候选。
+原始数据、已有manifest、registries、V2审计文件均未修改。

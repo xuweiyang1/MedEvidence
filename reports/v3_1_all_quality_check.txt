@@ -1,0 +1,14 @@
+﻿=== MedEvidence Hierarchical Chunk V3.1 独立结构验收 ===
+文章: 921
+父节点: 25676
+子Chunk: 42526
+Chunk类型: {'abstract': 2828, 'body': 28439, 'table': 8128, 'figure_caption': 3131}
+已解析正文覆盖: 31707617/31707617
+结构化表格行总数: 43348
+被验证的表格数据行引用: 40429
+关系条数: 116581
+关系类型: {'DOCUMENT_HAS_PARENT': 25676, 'PARENT_HAS_CHILD': 42526, 'SECTION_HAS_SUBSECTION': 16202, 'NEXT_IN_SECTION': 13996, 'PARENT_OF_MEDIA': 5802, 'SECTION_CONTAINS_MEDIA': 4757, 'TEXT_REFERENCES_MEDIA': 7622}
+图表登记数: 5802
+结构错误: 0
+其他提示: 0
+注意：结构检查通过不代表医学语义完整，不代表已完成图片视觉识别或许可审批。

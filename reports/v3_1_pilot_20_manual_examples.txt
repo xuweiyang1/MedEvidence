@@ -1,0 +1,68 @@
+﻿[RESULTS] PMC13643642:parent:body:s0012:child:0001
+parent=PMC13643642:parent:body:s0012
+section=['3. Results', '3.1. Clinical Data and Biochemical Parameters']
+Of the 178 individuals questioned, 46% (82) were male, while 54% (96) were female. The clinical and biochemical characteristics of the individuals are presented in Table 1. In our study, there was no statistically significant difference in age distribution between the T2DM and the control group (p > 0.05). Furthermore, we observed significant differences in several metabolic parameters. Fasting plasma glucose levels were 12.61 ± 0.45 mmol/L in the T2DM group and 5.360 ± 0.08 mmol/L in the control group (p < 0.0001) (Table 1). The HbA1c levels were 9.284 ± 0.21% in the T2DM group and 5.348 ± 0.08% in the control group (p < 0.0001). Triglyceride levels averaged 2.480 ± 0.20 mmol/L in the T2DM group and 1.675 ± 0.20 mmol/L in the control group (p < 0.0072). Total cholesterol levels were 5.046 ± 0.13 mmol/L in the T2DM group compared to 4.884 ± 0.12 mmol/L in the control group. HDL levels were 1.241 ± 0.03 mmol/L in the T2DM group and 1.373 ± 0.03 mmol/L in the control group. LDL levels were 2.918 ± 0.06 mmol/L in the T2DM group and 2.888 ± 0.05 mmol/L in the control group. There were no statistically significant differences in total cholesterol, HDL, and LDL levels between the groups (Table 1).
+
+
+---
+
+[METHODS] PMC13643642:parent:body:s0004:child:0001
+parent=PMC13643642:parent:body:s0004
+section=['2. Materials and Methods', '2.1. Study Subjects']
+This study was designed as a case–control study. The American Diabetes Association criteria (a fasting plasma glucose of more than or equal 126 mg/dL, or a plasma glucose of more than or equal 200 mg/dL after 2 h of oral glucose (1.75 g/kg), or an HbA1c of more than or equal 6.5%) guided the selection of 89 individuals with Type 2 diabetes mellitus (T2DM) in the case group. In the control group, 89 individuals met specific criteria: they appeared healthy, with a fasting plasma glucose of less than 100 mg/dL, an HbA1c of less than 5.7%, and no family history of T2DM. The study assumed an equal size for cases and controls, maintaining a 1:1 ratio.
+
+
+---
+
+[LIMITATIONS] PMC13643642:parent:body:s0016:child:0001
+parent=PMC13643642:parent:body:s0016
+section=['4. Discussion', '4.1. Limitations and Future Directions']
+This study did not consider environmental factors, lifestyle, or drugs that may also influence biochemical profiles. The low frequency of heterozygous genotypes for the ABCC8 rs1799854 polymorphism is one of the study’s limitations. Although an analysis of the genotype distribution showed that it followed HWE, small deviations cannot be completely excluded. Future research may investigate the significance of these genotypes in various populations and evaluate the relationships between genetics and T2DM. Furthermore, investigating additional SNPs in the ABCC8 gene may enhance our understanding of how these loci influence diabetes risk in the population at large.
+
+
+---
+
+[table] PMC13637796:table:TAB1:rows:0001
+parent=PMC13637796:table:TAB1:parent
+section=s0003
+Table 1
+Laboratory Values on Arrival
+eGFR: Estimated Glomerular Filtration Rate; CRP: C-Reactive Protein; ESR: Erythrocyte Sedimentation Rate
+Row 1: Laboratory Test | Result | Reference Range | Units
+Row 2: White Blood Cell Count | 14.7 | 4.0–11.0 | ×10³/µL
+Row 3: Hemoglobin | 15 | 13.5–17.5 | g/dL
+Row 4: Mean Corpuscular Volume | 78.1 | 80–100 | fL
+Row 5: Platelet Count | 191 | 150–400 | ×10³/µL
+Row 6: Sodium | 132 | 135–145 | mmol/L
+Row 7: Potassium | 3.6 | 3.5–5.0 | mmol/L
+Row 8: Bicarbonate (CO₂) | 19 | 22–29 | mmol/L
+Row 9: Creatinine | 1.4 | 0.7–1.3 | mg/dL
+Row 10: eGFR | 58 | >60 | mL/min/1.73 m²
+Row 11: Glucose | 130 | 70–99 | mg/dL
+Row 12: Phosphorus | 1.9 | 2.5–4.5 | mg/dL
+Row 13: Magnesium | 1.7 | 1.7–2.2 | mEq/L
+Row 14: Lactic Acid | 0.9 | 0.5–2.0 | mmol/L
+Row 15: CRP | 197 | <10 | mg/L
+Row 16: ESR | 47 | 0–20 | mm/hr
+Row 17: Creatine Kinase | 104 | 40–200 | U/L
+
+
+---
+
+[figure_caption] PMC13637796:figure:FIG1:caption
+parent=PMC13637796:figure:FIG1:parent
+section=s0003
+Figure 1
+Initial Clinical Presentation of Left Anterior Chest Wall Lesion
+Clinical photograph obtained on presentation demonstrating a large area of erythema, induration, and soft tissue swelling involving the superior left anterior chest wall overlying the pectoral region.
+
+
+---
+
+[body] PMC13637796:parent:body:s0002:child:0001
+parent=PMC13637796:parent:body:s0002
+section=['Introduction']
+Pyomyositis is a bacterial infection of skeletal muscle characterized by muscle inflammation that may progress to intramuscular suppuration and abscess formation. Historically regarded as a tropical disease, pyomyositis is increasingly recognized in temperate regions, particularly among patients with underlying conditions such as diabetes mellitus, chronic kidney disease, and immunocompromising disorders [1,2]. Staphylococcus aureus remains the predominant causative organism, whereas polymicrobial and anaerobic infections are relatively uncommon. The pelvic girdle and lower-extremity muscle groups are most frequently affected, while involvement of the pectoral musculature is rare [1-3].
+
+Primary pyomyositis should be distinguished from secondary muscular involvement caused by contiguous extension of a cutaneous, subcutaneous, or other adjacent infection. A diagnosis of pyomyositis is generally supported by imaging demonstrating inflammation or an abscess centered within skeletal muscle, direct drainage of intramuscular purulence, or operative confirmation of infected muscle. In contrast, muscular edema adjacent to a superficial or deep soft tissue abscess may represent reactive inflammation or secondary extension rather than primary pyomyositis [1-3].
+

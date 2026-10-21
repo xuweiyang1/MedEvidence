@@ -1,0 +1,9 @@
+query_id,query_type,query,gold_document_ids,annotation_status,reviewer_notes
+G001,gene_association,ABCC8 polymorphism and type 2 diabetes,,UNLABELED,人工核查研究是否直接探讨此关联及对应 Results
+R001,renal_function,How is eGFR estimated in chronic kidney disease?,,UNLABELED,标注直接讨论 eGFR 估算方法的论文
+T001,table_numeric,creatinine and eGFR reference range in a clinical laboratory table,,UNLABELED,需检查表头分组单位及脚注
+S001,adverse_effects,What adverse events were reported for SGLT2 inhibitors in chronic kidney disease trials?,,UNLABELED,需标明研究人群与不良事件表格
+P001,population_matching,Do kidney outcomes of SGLT2 inhibitors differ between adults with and without type 2 diabetes?,,UNLABELED,检查亚组与合并症人群是否适用
+M001,mechanism,What mechanisms link chronic inflammation to insulin resistance?,,UNLABELED,只标实际研究所询机制的论文
+D001,diagnosis,How is chronic kidney disease diagnosed using eGFR and albuminuria?,,UNLABELED,区分指南定义与观察性研究
+C001,study_design,Which published randomized trials investigate drug effects on eGFR decline?,,UNLABELED,仅标明确为随机试验且有结局的研究

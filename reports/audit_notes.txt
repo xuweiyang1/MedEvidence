@@ -1,0 +1,11 @@
+﻿生成时间(UTC): 2026-10-13T11:03:53+00:00
+此报告只读原始数据；未修改 licenses/registry.csv 或任何原始文章。
+CANDIDATE 不是法律确认或最终准入。REVIEW / HOLD 不得自动进入可再分发语料库。
+PubMed元数据不能当成可以任意重用的摘要/全文。
+PMC每篇许可证须核对manifest声明和原文XML证据；WHO按PDF逐份核对；CDC须排除第三方版权内容。
+缺失源URL、许可URL、SHA256的记录后续需要补齐；本程序不会猜测它们。
+现有 source-level registry 不等于 document-level 许可审计。
+PMC manifest行数: 936; PMC文章目录数: 936
+CDC manifest行数: 61; WHO PDF数: 16
+PubMed meta行数: 931; 来源级registry行数: 21
+文档级草稿记录: 1013; 来源分布: {'PMC': 936, 'CDC': 61, 'WHO': 16}; 许可状态分布: {'REVIEW': 1013}

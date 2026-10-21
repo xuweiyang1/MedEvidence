@@ -1,0 +1,146 @@
+[
+  {
+    "name": "Guideline for the pharmacological treatment of hypertension in adults (2021)",
+    "handle": "10665/344424",
+    "file": "9789240033986-eng.pdf",
+    "url": "https://iris.who.int/server/api/core/bitstreams/f062769d-f075-4a00-87af-0a2106e0bd04/content",
+    "bytes": 843539,
+    "license": "CC BY-NC-SA 3.0 IGO",
+    "disease": "cardiovascular"
+  },
+  {
+    "name": "Guideline for the pharmacological treatment of hypertension in adults: summary",
+    "handle": "10665/356108",
+    "file": "9789240050969-eng.pdf",
+    "url": "https://iris.who.int/server/api/core/bitstreams/ac4c41ea-49bc-48a6-9f23-4b697e9ca305/content",
+    "bytes": 528003,
+    "license": "CC BY-NC-SA 3.0 IGO",
+    "disease": "cardiovascular"
+  },
+  {
+    "name": "Hypertension guideline: web annex A: summary of evidence",
+    "handle": "10665/344384",
+    "file": "9789240033993-eng.pdf",
+    "url": "https://iris.who.int/server/api/core/bitstreams/3343baa9-b9c2-4f08-aecc-2b2d4bc07482/content",
+    "bytes": 4339687,
+    "license": "CC BY-NC-SA 3.0 IGO",
+    "disease": "cardiovascular"
+  },
+  {
+    "name": "Hypertension guideline: web annex B: evidence-to-decision frameworks",
+    "handle": "10665/344385",
+    "file": "9789240034006-eng.pdf",
+    "url": "https://iris.who.int/server/api/core/bitstreams/622f9611-5ad0-473e-8178-5314862a0360/content",
+    "bytes": 1189422,
+    "license": "CC BY-NC-SA 3.0 IGO",
+    "disease": "cardiovascular"
+  },
+  {
+    "name": "HEARTS-D: diagnosis and management of type 2 diabetes",
+    "handle": "10665/331710",
+    "file": "WHO-UCN-NCD-20.1-eng.pdf",
+    "url": "https://iris.who.int/server/api/core/bitstreams/2a0b4f68-7155-4ad1-b543-945791e31830/content",
+    "bytes": 1248098,
+    "license": "CC BY-NC-SA 3.0 IGO",
+    "disease": "endocrine_metabolic"
+  },
+  {
+    "name": "HEARTS technical package for cardiovascular disease management: overview",
+    "handle": "10665/252661",
+    "file": "9789241511377-eng.pdf",
+    "url": "https://iris.who.int/server/api/core/bitstreams/f671ea3b-5558-45aa-a266-c555111f9e5e/content",
+    "bytes": 2409007,
+    "license": "CC BY-NC-SA 3.0 IGO",
+    "disease": "cardiovascular"
+  },
+  {
+    "name": "HEARTS technical package: risk-based CVD management",
+    "handle": "10665/333221",
+    "file": "9789240001367-eng.pdf",
+    "url": "https://iris.who.int/server/api/core/bitstreams/aef55845-a638-45d0-b816-70dd5bf8885a/content",
+    "bytes": 2913503,
+    "license": "CC BY-NC-SA 3.0 IGO",
+    "disease": "cardiovascular"
+  },
+  {
+    "name": "HEARTS technical package: systems for monitoring",
+    "handle": "10665/260423",
+    "file": "WHO-NMH-NVI-18.5-eng.pdf",
+    "url": "https://iris.who.int/server/api/core/bitstreams/bf64c0b3-83d3-45ac-b809-5df7b0e9db38/content",
+    "bytes": 917503,
+    "license": "CC BY-NC-SA 3.0 IGO",
+    "disease": "cardiovascular"
+  },
+  {
+    "name": "HEARTS technical package: implementation guide",
+    "handle": "10665/275728",
+    "file": "WHO-NMH-NVI-18.14-eng.pdf",
+    "url": "https://iris.who.int/server/api/core/bitstreams/43cd7a23-18e5-4c9d-9ea7-c0ad58898fd5/content",
+    "bytes": 539045,
+    "license": "CC BY-NC-SA 3.0 IGO",
+    "disease": "cardiovascular"
+  },
+  {
+    "name": "HEARTS technical package: team-based care",
+    "handle": "10665/260424",
+    "file": "WHO-NMH-NVI-18.4-eng.pdf",
+    "url": "https://iris.who.int/server/api/core/bitstreams/c137904b-fd71-46dd-9fbf-d1eb502ae6a6/content",
+    "bytes": 964217,
+    "license": "CC BY-NC-SA 3.0 IGO",
+    "disease": "cardiovascular"
+  },
+  {
+    "name": "WHO package of essential noncommunicable (PEN) disease interventions for primary health care",
+    "handle": "10665/334186",
+    "file": "9789240009226-eng.pdf",
+    "url": "https://iris.who.int/server/api/core/bitstreams/b9f09202-a320-4c07-ba2c-afe0d1186339/content",
+    "bytes": 2584724,
+    "license": "CC BY-NC-SA 3.0 IGO",
+    "disease": "multi"
+  },
+  {
+    "name": "Implementation tools: PEN disease interventions for primary health care in low-resource settings",
+    "handle": "10665/133525",
+    "file": "9789241506557_eng.pdf",
+    "url": "https://iris.who.int/server/api/core/bitstreams/ebfac2a6-7357-4c18-adc3-1af255d3fa54/content",
+    "bytes": 4277550,
+    "license": "CC BY-NC-SA 3.0 IGO",
+    "disease": "multi"
+  },
+  {
+    "name": "Guideline on management of pneumonia and diarrhoea in children up to 10 years of age (2025)",
+    "handle": "10665/380059",
+    "file": "9789240103412-eng.pdf",
+    "url": "https://iris.who.int/server/api/core/bitstreams/bddcc725-8ffd-4d38-bec4-d6ead2904911/content",
+    "bytes": 2925874,
+    "license": "CC BY-NC-SA 3.0 IGO",
+    "disease": "infectious"
+  },
+  {
+    "name": "Ending preventable child deaths from pneumonia and diarrhoea by 2025 (GAPPD)",
+    "handle": "10665/79200",
+    "file": "9789241505239_eng.pdf",
+    "url": "https://iris.who.int/server/api/core/bitstreams/1e453609-08e5-41c4-b5d6-a09e0a81c888/content",
+    "bytes": 753535,
+    "license": "CC BY-NC-SA 3.0 IGO",
+    "disease": "infectious"
+  },
+  {
+    "name": "WHO recommendations on management of diarrhoea and pneumonia in HIV-infected infants and children (IMCI)",
+    "handle": "10665/44471",
+    "file": "9789241548083_eng.pdf",
+    "url": "https://iris.who.int/server/api/core/bitstreams/f43c3954-9b4c-4e97-80b1-6b0259e661da/content",
+    "bytes": 705391,
+    "license": "CC BY-NC-SA 3.0 IGO",
+    "disease": "infectious"
+  },
+  {
+    "name": "Tobacco and asthma",
+    "handle": "10665/378266",
+    "file": "9789240097537-eng.pdf",
+    "url": "https://iris.who.int/server/api/core/bitstreams/0099f504-aebd-40cb-ac42-fd15a92d8930/content",
+    "bytes": 502298,
+    "license": "CC BY-NC-SA 3.0 IGO",
+    "disease": "respiratory"
+  }
+]

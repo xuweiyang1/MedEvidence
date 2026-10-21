@@ -1,0 +1,30 @@
+{
+  "purpose": "ENGINEERING_SMOKE_TEST_ONLY",
+  "model": "BAAI/bge-m3",
+  "device": "cuda",
+  "sample_size": 100,
+  "sample_kind_distribution": {
+    "body": 60,
+    "table": 20,
+    "abstract": 10,
+    "figure_caption": 10
+  },
+  "verified_gold_requested": 0,
+  "verified_gold_in_sample": 0,
+  "batch_size": 2,
+  "max_length": 768,
+  "token_length_min": 34,
+  "token_length_avg": 301.77,
+  "token_length_max": 834,
+  "truncated_chunks": 1,
+  "truncation_rate": 0.01,
+  "failed_chunks": 0,
+  "embedding_dimension": 1024,
+  "encoding_seconds": 19.3489012,
+  "chunks_per_second": 5.1682521382661255,
+  "peak_gpu_memory_gib": 1.1029677391052246,
+  "qdrant_point_count": 100,
+  "qdrant_path": "E:\\Download\\Agent\\MedEvidence\\data\\processed\\index\\qdrant_bge_m3_smoke_v1_1",
+  "collection": "bge_m3_smoke_v1_1",
+  "note": "仅工程 Smoke Test，不能证明医学检索精度。"
+}

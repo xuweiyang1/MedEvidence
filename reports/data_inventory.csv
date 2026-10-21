@@ -1,0 +1,15 @@
+﻿category,folder,pattern,file_count,size_bytes,size_MiB
+PMC 原始 XML,data/raw/pmc/articles,*.xml,936,122174603,116.51
+PMC 原始 JSON,data/raw/pmc/articles,*.json,936,1266752,1.21
+PMC provenance,data/raw/pmc/provenance,*.json,5,18597,0.02
+PMC 已解析 TXT,data/processed/pmc_text,*.txt,936,33123188,31.59
+WHO PDF,data/raw/who,*.pdf,16,27641396,26.36
+CDC TXT,data/raw/cdc,*.txt,61,433288,0.41
+MeSH XML,data/raw/mesh,*.xml,2,313243651,298.73
+Disease Ontology 本体,data/raw/do,*.obo,1,7264205,6.93
+Disease Ontology OWL,data/raw/do,*.owl,1,28804846,27.47
+PubMed XML,data/raw/pubmed/xml,*.xml,10,26813774,25.57
+pmc_manifest 记录,data/raw/pmc/manifest.csv,CSV rows,936,330940,0.32
+cdc_manifest 记录,data/raw/cdc/manifest.csv,CSV rows,61,21989,0.02
+source_registry 记录,licenses/registry.csv,CSV rows,21,6321,0.01
+pubmed_meta 记录,data/raw/pubmed/pubmed_meta.csv,CSV rows,931,290108,0.28
