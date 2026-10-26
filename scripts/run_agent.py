@@ -1,4 +1,4 @@
-"""MedEvidence CLI v0.2: true OpenAI Agents SDK Runner; optional legacy v0.1 mode."""
+"""MedEvidence CLI v0.3: SDK Runner with evidence sufficiency decision tool."""
 from __future__ import annotations
 import argparse
 import asyncio
@@ -15,7 +15,7 @@ from agent.sdk_runtime import sdk_available, run_sdk_agent
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="MedEvidence Agent SDK v0.2 (真实 Runner / Tools / Handoff)")
+    parser = argparse.ArgumentParser(description="MedEvidence Agent SDK v0.3 (adaptive decision / Runner / Tools)")
     parser.add_argument("--question", help="循证医学科研/教学问题，勿上传真实患者病历")
     parser.add_argument("--project-root", help="MedEvidence 项目根目录；默认自动查找 index_coordinator.py")
     parser.add_argument("--probe", action="store_true", help="扫描实际项目根目录，不调用 API")
@@ -109,7 +109,7 @@ def main() -> int:
             print(f"[RETRIEVER ERROR] {type(exc).__name__}: {exc}", file=sys.stderr)
             return 2
     if args.trace_diagnose:
-        trace_dir = root / "outputs" / "agent_runs"
+        trace_dir = CODE_ROOT / "outputs" / "agent_runs_v030"
         files = sorted(trace_dir.glob("*.json"), key=lambda x: x.stat().st_mtime, reverse=True)
         if not files:
             print(f"[TRACE ERROR] 目录下没有 JSON 轨迹: {trace_dir}", file=sys.stderr)
@@ -123,6 +123,8 @@ def main() -> int:
                                {"coverage", "coverage_auto_recheck", "coverage_auto_recheck_error", "coverage_auto_recheck_skipped"}]
             errors = [ev for ev in events if ev.get("kind") in
                       {"tool_error", "runner_error", "citation_check_error"}]
+            adaptive_events = [ev for ev in events if ev.get("kind") in
+                               {"adaptive_decision", "adaptive_final_decision"}]
             print(json.dumps({
                 "trace_file": str(files[0]),
                 "status": data.get("result", {}).get("status"),
@@ -135,6 +137,11 @@ def main() -> int:
                 "guardrail_events": [{k: ev[k] for k in ("accepted", "reason", "draft_status", "claim_count", "evidence_count", "coverage_checked") if k in ev}
                                      for ev in output_guardrails],
                 "errors": [{k: ev[k] for k in ("kind", "tool", "error_type") if k in ev} for ev in errors],
+                "adaptive_decisions": [{k: ev[k] for k in
+                                       ("kind", "action", "reason_code", "sufficiency_proxy",
+                                        "aspect_coverage", "anchor_quality_proxy", "remaining_searches",
+                                        "new_chunks_last_search", "unresolved_aspects") if k in ev}
+                                       for ev in adaptive_events],
                 "note": "仅输出脱敏元数据，不包含原问题、检索文本或 API Key。旧轨迹可能缺少新版字段。",
             }, ensure_ascii=False, indent=2))
             return 0
@@ -199,6 +206,9 @@ def main() -> int:
         import os
         os.environ["MEDEVIDENCE_TRACE_CONTENT"] = "1"
     cfg = Config.from_env(root, code_root=CODE_ROOT)
+    # V0.3 traces stay OUTSIDE the frozen baseline's root/outputs/agent_runs.
+    from dataclasses import replace
+    cfg = replace(cfg, log_dir=CODE_ROOT / "outputs" / "agent_runs_v030")
     try:
         retriever = make_retriever(cfg)
         if args.legacy:
@@ -217,7 +227,7 @@ def main() -> int:
     if args.json:
         print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2))
     else:
-        print(f"\n=== MedEvidence {'legacy' if args.legacy else 'Agents SDK'} / {result.status} ===")
+        print(f"\n=== MedEvidence {'legacy' if args.legacy else 'Agents SDK V0.3'} / {result.status} ===")
         print(result.answer)
         if result.evidence:
             print("\n证据来源：")

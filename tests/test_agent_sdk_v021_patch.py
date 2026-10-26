@@ -71,8 +71,8 @@ class TestAgentSDKV021Patch(unittest.TestCase):
         self.assertEqual(planner.name, "EvidencePlanner")
         self.assertEqual(writer.name, "EvidenceWriter")
         self.assertEqual(len(planner.handoffs), 1)
-        self.assertEqual({t.name for t in planner.tools}, {"lookup_medical_document", "list_retrieved_evidence", "search_medical_evidence", "assess_evidence_coverage"})
-        self.assertEqual({t.name for t in writer.tools}, {"lookup_medical_document", "list_retrieved_evidence", "search_medical_evidence", "assess_evidence_coverage"})
+        self.assertEqual({t.name for t in planner.tools}, {"lookup_medical_document", "list_retrieved_evidence", "search_medical_evidence", "assess_evidence_coverage", "decide_next_evidence_action"})
+        self.assertEqual({t.name for t in writer.tools}, {"lookup_medical_document", "list_retrieved_evidence", "search_medical_evidence", "assess_evidence_coverage", "decide_next_evidence_action"})
 
 
 if __name__ == "__main__":

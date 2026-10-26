@@ -1,0 +1,128 @@
+{
+  "schema": "MedEvidence_V041_StrictFacetGuard_Shadow_V1",
+  "cases_completed": 15,
+  "arms": {
+    "fifo": {
+      "1": {
+        "cases": 15,
+        "mean_coverage_proxy": 0.5111,
+        "mean_raw_coverage_proxy": 0.6667,
+        "mean_unique_documents": 4.4667,
+        "total_admitted_new": 120,
+        "total_prior_evicted": 0,
+        "total_anchors_lost": 0,
+        "actual_judge_api_calls": 0,
+        "actual_coverage_api_calls_nonshared": 15,
+        "note": "LLM internal proxies only, NOT clinical gold"
+      },
+      "2": {
+        "cases": 15,
+        "mean_coverage_proxy": 0.5556,
+        "mean_raw_coverage_proxy": 0.7778,
+        "mean_unique_documents": 5.8667,
+        "total_admitted_new": 37,
+        "total_prior_evicted": 0,
+        "total_anchors_lost": 0,
+        "actual_judge_api_calls": 0,
+        "actual_coverage_api_calls_nonshared": 15,
+        "note": "LLM internal proxies only, NOT clinical gold"
+      },
+      "3": {
+        "cases": 15,
+        "mean_coverage_proxy": 0.5779,
+        "mean_raw_coverage_proxy": 0.7779,
+        "mean_unique_documents": 6.5333,
+        "total_admitted_new": 19,
+        "total_prior_evicted": 0,
+        "total_anchors_lost": 0,
+        "actual_judge_api_calls": 0,
+        "actual_coverage_api_calls_nonshared": 10,
+        "note": "LLM internal proxies only, NOT clinical gold"
+      }
+    },
+    "anchor_diverse": {
+      "1": {
+        "cases": 15,
+        "mean_coverage_proxy": 0.5111,
+        "mean_raw_coverage_proxy": 0.6667,
+        "mean_unique_documents": 4.4667,
+        "total_admitted_new": 120,
+        "total_prior_evicted": 0,
+        "total_anchors_lost": 0,
+        "actual_judge_api_calls": 0,
+        "actual_coverage_api_calls_nonshared": 0,
+        "note": "LLM internal proxies only, NOT clinical gold"
+      },
+      "2": {
+        "cases": 15,
+        "mean_coverage_proxy": 0.5556,
+        "mean_raw_coverage_proxy": 0.7778,
+        "mean_unique_documents": 5.8667,
+        "total_admitted_new": 38,
+        "total_prior_evicted": 1,
+        "total_anchors_lost": 0,
+        "actual_judge_api_calls": 0,
+        "actual_coverage_api_calls_nonshared": 1,
+        "note": "LLM internal proxies only, NOT clinical gold"
+      },
+      "3": {
+        "cases": 15,
+        "mean_coverage_proxy": 0.6001,
+        "mean_raw_coverage_proxy": 0.7779,
+        "mean_unique_documents": 7.2,
+        "total_admitted_new": 34,
+        "total_prior_evicted": 15,
+        "total_anchors_lost": 0,
+        "actual_judge_api_calls": 0,
+        "actual_coverage_api_calls_nonshared": 8,
+        "note": "LLM internal proxies only, NOT clinical gold"
+      }
+    },
+    "gap_aware": {
+      "1": {
+        "cases": 15,
+        "mean_coverage_proxy": 0.5111,
+        "mean_raw_coverage_proxy": 0.6667,
+        "mean_unique_documents": 4.4667,
+        "total_admitted_new": 120,
+        "total_prior_evicted": 0,
+        "total_anchors_lost": 0,
+        "actual_judge_api_calls": 0,
+        "actual_coverage_api_calls_nonshared": 0,
+        "note": "LLM internal proxies only, NOT clinical gold"
+      },
+      "2": {
+        "cases": 15,
+        "mean_coverage_proxy": 0.5111,
+        "mean_raw_coverage_proxy": 0.7778,
+        "mean_unique_documents": 5.8667,
+        "total_admitted_new": 37,
+        "total_prior_evicted": 0,
+        "total_anchors_lost": 0,
+        "actual_judge_api_calls": 0,
+        "actual_coverage_api_calls_nonshared": 2,
+        "note": "LLM internal proxies only, NOT clinical gold"
+      },
+      "3": {
+        "cases": 15,
+        "mean_coverage_proxy": 0.6001,
+        "mean_raw_coverage_proxy": 0.7779,
+        "mean_unique_documents": 7.2667,
+        "total_admitted_new": 28,
+        "total_prior_evicted": 9,
+        "total_anchors_lost": 0,
+        "actual_judge_api_calls": 0,
+        "actual_coverage_api_calls_nonshared": 8,
+        "note": "LLM internal proxies only, NOT clinical gold"
+      }
+    }
+  },
+  "actual_shared_support_judge_api_calls": 107,
+  "independent_clinical_validation": false,
+  "all_three_rounds_counterfactual": true,
+  "fairness_limit": "identical FIFO-driven retrieval exposure, not 3 independent policy trajectories; Qwen judging incurs extra real API cost",
+  "eval_input_order": "lexicographically sorted by immutable chunk_id; cached for identical sets within case",
+  "weak_qrels_provisional_only": true,
+  "strict_guard_is_a_model_proxy_not_medical_truth": true,
+  "all_three_arms_use_same_strict_guard": true
+}

@@ -24,6 +24,7 @@ from .config import Config
 from .evidence_evaluator import EvidenceEvaluator
 from .llm_client import QwenLLM, parse_json
 from .models import AgentResult, Coverage, Evidence
+from .adaptive_policy import PolicyDecision, decide_evidence_action
 
 
 def digest(value: str) -> str:
@@ -40,6 +41,9 @@ class SDKState:
     queries: set[str] = field(default_factory=set)
     search_calls: int = 0
     coverage: Coverage | None = None
+    policy_decision: PolicyDecision | None = None
+    last_new_chunks: int = 0
+    no_novelty_streak: int = 0
     aspects: list[str] = field(default_factory=list)
     events: list[dict] = field(default_factory=list)
 
@@ -115,6 +119,7 @@ async def recheck_stale_coverage(state: SDKState) -> bool:
     try:
         state.coverage = await asyncio.to_thread(
             state.evaluator.evaluate, state.aspects, list(state.evidence.values()))
+        state.policy_decision = None
     except Exception as exc:
         state.record("coverage_auto_recheck_error", error_type=type(exc).__name__)
         return False
@@ -192,12 +197,29 @@ def build_sdk_agents(model):
         state.search_calls += 1
         # Evidence coverage must be rechecked after any new retrieval.
         state.coverage = None
+        state.policy_decision = None
+        known_before = len(state.evidence)
         n = min(max(1, top_k), state.config.top_k)
         try:
             hits = await asyncio.to_thread(state.retriever.search, normalized, n)
         except Exception as exc:
-            state.record("tool_error", tool="search_medical_evidence", error_type=type(exc).__name__)
-            return json.dumps({"error": "retrieval_failed", "error_type": type(exc).__name__})
+            # Local-only diagnostics: keep detailed errors out of the trace JSON
+            # and tool return value, while preserving the existing fail-closed behavior.
+            import traceback
+
+            print("\n========== RETRIEVAL ERROR ==========", flush=True)
+            traceback.print_exc()
+            print("========== END ERROR ==========\n", flush=True)
+
+            state.record(
+                "tool_error",
+                tool="search_medical_evidence",
+                error_type=type(exc).__name__
+            )
+            return json.dumps({
+                "error": "retrieval_failed",
+                "error_type": type(exc).__name__
+            })
         returned = []
         for hit in hits:
             if not hit.text.strip():
@@ -209,6 +231,8 @@ def build_sdk_agents(model):
                 state.source_to_id[hit.id] = eid
                 state.evidence[eid] = Evidence(**{**vars(hit), "id": eid})
             returned.append(state.source_to_id[hit.id])
+        state.last_new_chunks = len(state.evidence) - known_before
+        state.no_novelty_streak = 0 if state.last_new_chunks else state.no_novelty_streak + 1
         state.record("tool_search", query=normalized if state.config.trace_content else "[redacted]",
                      query_hash=digest(normalized), search_calls=state.search_calls,
                      hit_count=len(hits), evidence_ids=list(dict.fromkeys(returned)))
@@ -236,6 +260,8 @@ def build_sdk_agents(model):
             return json.dumps({"error": "search_budget_exhausted", "evidence_ids": list(state.evidence)})
         state.search_calls += 1
         state.coverage = None
+        state.policy_decision = None
+        known_before = len(state.evidence)
         try:
             hits = await asyncio.to_thread(state.retriever.lookup_document, title, min(state.config.top_k, 8), focus)
         except Exception as exc:
@@ -252,6 +278,8 @@ def build_sdk_agents(model):
             if hit.id in state.source_to_id:
                 registered.append(state.source_to_id[hit.id])
         unique = list(dict.fromkeys(registered))
+        state.last_new_chunks = len(state.evidence) - known_before
+        state.no_novelty_streak = 0 if state.last_new_chunks else state.no_novelty_streak + 1
         state.record("tool_title_lookup", title_hash=digest(title), hit_count=len(hits),
                      evidence_ids=unique, search_calls=state.search_calls)
         return json.dumps({"title_lookup_found": bool(unique),
@@ -272,6 +300,7 @@ def build_sdk_agents(model):
         if not cleaned:
             return json.dumps({"error": "no_aspects"})
         state.aspects = cleaned
+        state.policy_decision = None
         try:
             state.coverage = await asyncio.to_thread(state.evaluator.evaluate, cleaned, list(state.evidence.values()))
         except Exception as exc:
@@ -284,6 +313,27 @@ def build_sdk_agents(model):
                            "gaps": cov.gaps, "conflicts": cov.conflicts,
                            "remaining_searches": state.config.max_rounds - state.search_calls,
                            "note": "heuristic source coverage; NOT clinical evidence quality"}, ensure_ascii=False)
+
+    @function_tool
+    async def decide_next_evidence_action(ctx: RunContextWrapper[SDKState]) -> str:
+        """Apply the deterministic V0.3 evidence sufficiency decision policy AFTER coverage.
+
+        It is a transparent retrieval controller, not a medical truth assessor.
+        When action=search_again, use unresolved aspects to formulate a novel
+        query before handing off. Never interpret score as clinical certainty.
+        """
+        state = ctx.context
+        if state.coverage is None or not state.aspects:
+            return json.dumps({"error": "must_assess_coverage_first"})
+        result = decide_evidence_action(
+            aspects=state.aspects, coverage=state.coverage,
+            evidence=list(state.evidence.values()), searches_used=state.search_calls,
+            max_searches=state.config.max_rounds,
+            new_chunks_last_search=state.last_new_chunks,
+            no_novelty_streak=state.no_novelty_streak)
+        state.policy_decision = result
+        state.record("adaptive_decision", **result.public())
+        return json.dumps(result.public(include_gap_text=True), ensure_ascii=False)
 
     @function_tool
     async def list_retrieved_evidence(ctx: RunContextWrapper[SDKState]) -> str:
@@ -335,11 +385,13 @@ def build_sdk_agents(model):
                       '"limitations":["局限说明"]}。'
                       "最多八条独立医学主张，未找到证据时 status=insufficient_evidence 且 claims=[]。"
                       "不能输出自由叙述段落绕过主张级引用验证。"
+                      "调用 decide_next_evidence_action 查看当前策略；若返回search_again仍有预算，"
+                      "优先补检尚未覆盖的子问题，不能把代理评分当作临床可靠性。"
                       "重要：若你执行了新的 search_medical_evidence 或 lookup_medical_document，则必须对最新的证据再次调用"
                       "assess_evidence_coverage；若引用未登记或证据无法验证，只能输出"
                       "insufficient_evidence，claims=[]，不得编造结论。"),
         model=model,
-        tools=[list_retrieved_evidence, lookup_medical_document, search_medical_evidence, assess_evidence_coverage],
+        tools=[list_retrieved_evidence, lookup_medical_document, search_medical_evidence, assess_evidence_coverage, decide_next_evidence_action],
         output_guardrails=[medical_output_guardrail],
     )
     planner = Agent(
@@ -348,11 +400,12 @@ def build_sdk_agents(model):
                       "优先调用 lookup_medical_document 定位该篇论文；如果输入提示已预载论文证据，"
                       "先调用 list_retrieved_evidence 阅读。其他问题调用 search_medical_evidence。"
                       "之后调用 assess_evidence_coverage 检验 2-5 项子问题的证据覆盖。"
-                      "如果覆盖存在缺口且剩余搜索次数大于0，修改查询补查。"
+                      "然后调用 decide_next_evidence_action，并依据返回的 action 执行："
+                      "search_again=围绕unresolved_aspects修改查询补检；answer/partial/abstain=交接Writer。"
                       "然后必须 handoff 给 EvidenceWriter，不能自行输出最终答案。"
                       "工具预算是硬约束；未找到可靠证据同样移交 EvidenceWriter 说明不足。"),
         model=model,
-        tools=[lookup_medical_document, list_retrieved_evidence, search_medical_evidence, assess_evidence_coverage],
+        tools=[lookup_medical_document, list_retrieved_evidence, search_medical_evidence, assess_evidence_coverage, decide_next_evidence_action],
         handoffs=[writer],
         input_guardrails=[medical_input_guardrail],
     )
@@ -443,10 +496,20 @@ async def run_sdk_agent(question: str, cfg: Config, retriever: Any) -> AgentResu
         limits = [str(x)[:250] for x in drafted.get("limitations", [])[:8]]
         if drafted.get("claims") and coverage is not None and not coverage.covered:
             limits.insert(0, "覆盖检查未发现支持任何关键子问题的文献片段。")
+    # Recompute the deterministic policy from FINAL coverage/evidence even if
+    # the LLM omitted the optional decision tool. Never promote to answered
+    # while the policy still reports unresolved evidence gaps or conflict.
+    final_policy = decide_evidence_action(
+        aspects=state.aspects, coverage=coverage, evidence=list(state.evidence.values()),
+        searches_used=state.search_calls, max_searches=cfg.max_rounds,
+        new_chunks_last_search=state.last_new_chunks,
+        no_novelty_streak=state.no_novelty_streak)
+    state.record("adaptive_final_decision", **final_policy.public())
     if accepted:
         answer = "\n".join("- " + c["text"] + " " + "".join("[" + x + "]" for x in c["citation_ids"])
                            for c in accepted)
         status = ("answered" if drafted.get("status") == "answered" and
+                  final_policy.action == "answer" and
                   coverage is not None and coverage.ratio >= cfg.coverage_threshold and
                   not coverage.conflicts and len(accepted) == len(drafted["claims"])
                   else "partial")
@@ -467,7 +530,10 @@ async def run_sdk_agent(question: str, cfg: Config, retriever: Any) -> AgentResu
         unverifiable_absence = ("未检索到题为", "未被本库收", "未被本库收录", "可能尚未发表", "该研究可能尚未发表", "尚未发表", "研究不存在")
         limits = [x for x in limits if not any(bad in x for bad in unverifiable_absence)]
         limits.insert(0, "已在本地数据库中定位到指定论文；本次未能通过证据覆盖或引用校验，不能据此认定该文献未收录。")
-    state.record("finish", status=status, accepted_claims=len(accepted), search_calls=state.search_calls)
+    if accepted and final_policy.action != "answer":
+        limits.insert(0, "自适应证据决策未满足完整回答条件：" + final_policy.reason_code)
+    state.record("finish", status=status, accepted_claims=len(accepted), search_calls=state.search_calls,
+                 adaptive_action=final_policy.action, adaptive_reason=final_policy.reason_code)
     cfg.log_dir.mkdir(parents=True, exist_ok=True)
     trace_file = cfg.log_dir / f"{run_id}.json"
     response = AgentResult(run_id=run_id, status=status, answer=answer, claims=accepted,
@@ -475,7 +541,7 @@ async def run_sdk_agent(question: str, cfg: Config, retriever: Any) -> AgentResu
                            verification=verification, trace_path=str(trace_file),
                            rounds=state.search_calls, coverage_ratio=coverage.ratio if coverage else 0.0)
     trace_file.write_text(json.dumps({
-        "schema": "MedEvidenceSDKTrace_v0.2", "run_id": run_id, "sdk_used": True,
+        "schema": "MedEvidenceSDKTrace_v0.3", "run_id": run_id, "sdk_used": True,
         "sdk_events_metadata_only": collector.events,
         "agent_events": state.events, "result": response.to_dict(),
         "privacy": "默认不保存原问题/查询/证据正文。SDK tracing 只在本地记录结构性元数据，不向 OpenAI 上传。",
