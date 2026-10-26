@@ -1,0 +1,5 @@
+# Agent 核心是 Python 3.11 标准库，没有必要的新必装依赖。
+# 若使用本地 Qdrant 检索，请安装以下依赖（会复用已下载的 BGE-M3 模型）：
+qdrant-client>=1.9,<2
+FlagEmbedding>=1.2,<2
+# Hook 模式若已有检索环境，可能不需要重复安装以上依赖。
