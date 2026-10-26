@@ -51,12 +51,16 @@
 | `answered` | 主张全部通过核验，且策略允许作答 | 医学结论一定正确 |
 | `partial` | 有已核验主张，但覆盖或策略仍显示缺口 | 失败；它可能是有用的部分证据 |
 | `insufficient_evidence` | 运行完成，但没有通过核验的主张 | 文献不存在 |
-| `error` | 运行本身失败：网络、SDK、guardrail、引用核验异常 | 证据不足，或文献不支持 |
+| `error` | 运行本身失败：网络、SDK、guardrail、引用核验、检索工具或覆盖评估异常 | 证据不足，或文献不支持 |
 | `model_knowledge` | 仅网页通用模式：模型知识，无本地证据 | 循证结论 |
 
 > `error` 会附带 `reason_code`（`agent_runner_error` / `guardrail_rejected` /
-> `verification_failed` / `invalid_output`）与 `failure_stage`，网页以红色"运行失败"呈现。
+> `verification_failed` / `invalid_output` / `retrieval_failed` / `coverage_failed`）
+> 与 `failure_stage`，网页以红色"运行失败"呈现。
 > 只有 `insufficient_evidence` 才表示"证据层面没有形成结论"。
+>
+> 检索工具与覆盖评估的异常会被计数（`SDKState.retrieval_errors` / `coverage_errors`）：
+> 若所有检索都失败，或覆盖评估始终不可用，结果判定为 `error` 而不是拒答。
 
 ## 5. 检索细节
 

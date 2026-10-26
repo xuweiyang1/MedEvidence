@@ -77,6 +77,32 @@ class TestOutcome(unittest.TestCase):
         self.assertEqual(out.status, "insufficient_evidence")
         self.assertEqual(out.reason_code, "no_verified_claims")
 
+    def test_all_retrieval_failures_are_error(self):
+        out = compose_outcome(accepted=[], drafted={"status": "insufficient_evidence", "claims": []},
+                              coverage=None, policy=policy("abstain"), error_type="",
+                              verification_method="not_run", coverage_threshold=1.0,
+                              retrieval_successes=0, retrieval_errors=3)
+        self.assertEqual(out.status, "error")
+        self.assertEqual(out.reason_code, "retrieval_failed")
+        self.assertEqual(out.failure_stage, "retrieval")
+        self.assertIn("不代表文献中没有证据", out.answer)
+
+    def test_one_successful_search_keeps_evidence_verdict(self):
+        out = compose_outcome(accepted=[], drafted={"status": "insufficient_evidence", "claims": []},
+                              coverage=coverage(0.0), policy=policy("abstain"), error_type="",
+                              verification_method="not_run", coverage_threshold=1.0,
+                              retrieval_successes=1, retrieval_errors=2)
+        self.assertEqual(out.status, "insufficient_evidence")
+
+    def test_coverage_failure_is_error(self):
+        out = compose_outcome(accepted=[], drafted={"status": "insufficient_evidence", "claims": []},
+                              coverage=None, policy=policy("abstain"), error_type="",
+                              verification_method="not_run", coverage_threshold=1.0,
+                              retrieval_successes=1, retrieval_errors=0, coverage_errors=1)
+        self.assertEqual(out.status, "error")
+        self.assertEqual(out.reason_code, "coverage_failed")
+        self.assertEqual(out.failure_stage, "coverage")
+
 
 if __name__ == "__main__":
     unittest.main()

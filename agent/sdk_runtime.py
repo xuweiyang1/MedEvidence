@@ -41,6 +41,10 @@ class SDKState:
     source_to_id: dict[str, str] = field(default_factory=dict)
     queries: set[str] = field(default_factory=set)
     search_calls: int = 0
+    retrieval_successes: int = 0
+    retrieval_errors: int = 0
+    coverage_errors: int = 0
+    tool_error_types: list[str] = field(default_factory=list)
     coverage: Coverage | None = None
     policy_decision: PolicyDecision | None = None
     last_new_chunks: int = 0
@@ -212,6 +216,8 @@ def build_sdk_agents(model):
             traceback.print_exc()
             print("========== END ERROR ==========\n", flush=True)
 
+            state.retrieval_errors += 1
+            state.tool_error_types.append(type(exc).__name__)
             state.record(
                 "tool_error",
                 tool="search_medical_evidence",
@@ -221,6 +227,7 @@ def build_sdk_agents(model):
                 "error": "retrieval_failed",
                 "error_type": type(exc).__name__
             })
+        state.retrieval_successes += 1
         returned = []
         for hit in hits:
             if not hit.text.strip():
@@ -308,6 +315,8 @@ def build_sdk_agents(model):
         try:
             state.coverage = await asyncio.to_thread(state.evaluator.evaluate, cleaned, list(state.evidence.values()))
         except Exception as exc:
+            state.coverage_errors += 1
+            state.tool_error_types.append(type(exc).__name__)
             state.record("tool_error", tool="assess_evidence_coverage", error_type=type(exc).__name__)
             return json.dumps({"error": "coverage_check_failed", "error_type": type(exc).__name__})
         cov = state.coverage
@@ -516,7 +525,10 @@ async def run_sdk_agent(question: str, cfg: Config, retriever: Any) -> AgentResu
     outcome = compose_outcome(
         accepted=accepted, drafted=drafted, coverage=coverage, policy=final_policy,
         error_type=error_type, verification_method=str(verification.get("method", "")),
-        coverage_threshold=cfg.coverage_threshold)
+        coverage_threshold=cfg.coverage_threshold,
+        retrieval_successes=state.retrieval_successes,
+        retrieval_errors=state.retrieval_errors,
+        coverage_errors=state.coverage_errors)
     status = outcome.status
     if accepted:
         answer = "\n".join("- " + c["text"] + " " + "".join("[" + x + "]" for x in c["citation_ids"])
@@ -537,6 +549,11 @@ async def run_sdk_agent(question: str, cfg: Config, retriever: Any) -> AgentResu
                 limits.insert(0, "引用核验过程失败（模型或网络错误），本次结果按失败处理。")
             elif outcome.reason_code == "invalid_output":
                 limits.insert(0, "模型未返回符合契约的结构化结果，本次结果按失败处理。")
+            elif outcome.reason_code == "retrieval_failed":
+                detail = "、".join(sorted(set(state.tool_error_types))) or "未知错误"
+                limits.insert(0, f"本地检索全部失败（{detail}），本次结果按运行故障处理；请检查索引与依赖环境。")
+            elif outcome.reason_code == "coverage_failed":
+                limits.insert(0, "证据覆盖评估调用失败，本次结果按运行故障处理。")
         elif reason != "ok" and reason != "handoff_not_completed":
             limits.insert(0, "输出结构检查未通过：" + reason)
     if prefetch_count and status in ("insufficient_evidence", "error"):

@@ -89,7 +89,7 @@ notepad .env.agent
 ### 3. 先做离线检查（不花钱）
 
 ```powershell
-python scripts/run_agent.py --self-test      # 75 项离线单元测试
+python scripts/run_agent.py --self-test      # 78 项离线单元测试
 python scripts/run_agent.py --sdk-check      # 检查 SDK 组件图
 python scripts/run_agent.py --retriever-check # 检查 Qdrant collection 与 FTS5 表
 ```
@@ -171,7 +171,7 @@ python -m streamlit run web_app/app.py
 
 ## 版本说明
 
-当前代码对应 Agent V0.3.0 + 网页双模式 V3。旧版 V0.2.x 冻结 SDK 已从工作树移除，但仍保留在 Git 历史（首个提交）中；如需对照，可 `git show 586dce3 --stat`。
+当前代码对应 Agent V0.3.1 + 网页双模式 V3。旧版 V0.2.x 冻结 SDK 已从工作树移除，但仍保留在 Git 历史（首个提交）中；如需对照，可 `git show 586dce3 --stat`。
 
 ## 许可与引用
 

@@ -38,6 +38,9 @@ def compose_outcome(
     error_type: str,
     verification_method: str,
     coverage_threshold: float,
+    retrieval_successes: int = 1,
+    retrieval_errors: int = 0,
+    coverage_errors: int = 0,
 ) -> Outcome:
     """Decide the public status. ``accepted`` claims are already verified."""
     claims = (drafted or {}).get("claims") or []
@@ -75,4 +78,10 @@ def compose_outcome(
     if drafted is None:
         return Outcome("error", "invalid_output", "output_contract",
                        ERROR_ANSWER.format(code="invalid_output"))
+    if coverage_errors and coverage is None:
+        return Outcome("error", "coverage_failed", "coverage",
+                       ERROR_ANSWER.format(code="coverage_failed"))
+    if retrieval_errors and retrieval_successes == 0:
+        return Outcome("error", "retrieval_failed", "retrieval",
+                       ERROR_ANSWER.format(code="retrieval_failed"))
     return Outcome("insufficient_evidence", "no_verified_claims", "", REFUSAL_ANSWER)

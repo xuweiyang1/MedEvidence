@@ -75,7 +75,8 @@ python -m streamlit run web_app/app.py
 | 401 / 403 | Key 无效或无该模型权限；到百炼控制台确认模型名与业务空间 |
 | 429 | 额度或并发限制；降低 `MAX_ROUNDS`/`TOP_K` 或稍后重试 |
 | 第一次提问特别慢 | 模型加载 + 首次检索；常驻模式只慢一次 |
-| 网页显示"运行失败" | 看 `reason_code` / `failure_stage`：网络、Guardrail 还是引用核验；不是证据不足 |
+| 网页显示"运行失败" | 看 `reason_code` / `failure_stage`：网络、Guardrail、检索还是引用核验；不是证据不足 |
+| 检索全部失败（`retrieval_failed`） | 确认索引可读、`FlagEmbedding` 可加载；若报 protobuf/`Descriptors cannot be created directly`，见下方 |
 | 8501 被占用 | 关闭旧进程，或 `--server.port 8502` |
 | CUDA 报错 / OOM | 改回 `MEDEVIDENCE_DEVICE=cpu`，不要改索引 |
 
@@ -85,11 +86,19 @@ python -m streamlit run web_app/app.py
 
 - `error`：本次运行没有完成。`reason_code` 为
   `agent_runner_error`（网络/SDK）、`guardrail_rejected`（输出结构或引用不合法）、
-  `verification_failed`（引用核验调用异常）或 `invalid_output`（未按契约返回 JSON）。
+  `verification_failed`（引用核验调用异常）、`invalid_output`（未按契约返回 JSON）、
+  `retrieval_failed`（所有检索工具调用都失败）或 `coverage_failed`（覆盖评估不可用）。
 - `insufficient_evidence`：运行完成，但没有通过核验的主张——这才是证据层面的结论。
 
 排查顺序：看 `reason_code` → `--trace-diagnose` → 检查网络与 Key → 再怀疑检索。
 网页对 `error` 显示红色"运行失败"标签，不会显示成"证据不足"。
+
+### protobuf / TensorFlow 冲突
+
+若日志出现 `TypeError: Descriptors cannot be created directly`，说明 Transformers 试图导入
+TensorFlow，而 TF 自带的 `_pb2` 与 protobuf ≥ 4 不兼容。本项目不使用 TF/Flax，
+`agent/__init__.py` 会在任何库导入前强制 `USE_TF=0`、`USE_FLAX=0`。
+手工运行脚本时不要覆盖这两个变量为 1。
 
 ## 7. 数据与索引
 

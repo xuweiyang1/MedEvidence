@@ -6,7 +6,7 @@
 ## 1. 离线单元测试
 
 ```powershell
-python scripts/run_agent.py --self-test                     # 75 项，无需 Key / 索引 / SDK 网络
+python scripts/run_agent.py --self-test                     # 78 项，无需 Key / 索引 / SDK 网络
 python -m unittest discover -s web_app/tests -p "test_*.py" # 网页层：队列、双模式、历史迁移
 ```
 
