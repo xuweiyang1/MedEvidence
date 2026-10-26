@@ -1,12 +1,16 @@
-# 密钥，绝对不能提交
+# 密钥与本地配置：绝对不要提交
 .env
 .env.*
-!.env.example
+!.env.agent.example
 env
+web_app/.python_path.txt
 
-# 大数据和生成结果
+# 大数据、索引、运行产物
 data/
 outputs/
+*.sqlite3
+web_app/data/
+.streamlit/secrets.toml
 
 # Python 缓存
 __pycache__/
@@ -23,7 +27,7 @@ venv/
 .DS_Store
 Thumbs.db
 
-# 生成压缩包和临时文件
+# 生成压缩包、日志与临时文件
 *.zip
 *.log
 *.tmp

@@ -1,0 +1,6 @@
+# 核心运行时：Agent SDK + 本地混合检索
+# 说明：FlagEmbedding 会安装 PyTorch（体积较大）。若已有 BGE-M3 推理环境，
+# 可以只装 openai-agents 与 qdrant-client，并通过 hook 模式接入自定义检索。
+openai-agents>=0.6,<1
+qdrant-client>=1.9,<2
+FlagEmbedding>=1.2,<2

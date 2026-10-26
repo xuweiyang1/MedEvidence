@@ -1,5 +1,0 @@
-# SDK workflow (Runner / FunctionTool / Guardrails / Handoffs / Tracing)
-openai-agents>=0.6,<1
-# Required only if you choose MEDEVIDENCE_RETRIEVER=qdrant for vector searching:
-qdrant-client>=1.9,<2
-FlagEmbedding>=1.2,<2
