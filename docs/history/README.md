@@ -11,6 +11,7 @@
 | `README_web_v1.md` | 网页 V1（子进程调用） |
 | `README_web_v2_speed.md` | 网页 V2（常驻 Agent 性能修复） |
 | `README_web_v3_dual_mode.md` | 网页 V3（通用/严格双模式） |
+| `README_phase1c_pilot_review.md` | Phase 1C：3 条试点证据卡的生成与人工复核步骤 |
 | `迁移指南_20261013.md`、`迁移说明_20261013.md` | 数据层时期的跨机器迁移说明（`D:\` 路径已废弃） |
 
 > 冻结的 V0.2.7 代码不在工作树中，可在 Git 历史的首个提交中找到：
