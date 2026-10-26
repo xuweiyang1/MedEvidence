@@ -48,12 +48,14 @@ def run_web_question(
     result = dict(general_runner(question))
     result['mode'] = 'general'
     result['evidence_first'] = True
+    local_status = str((agent_result or {}).get('status', 'unavailable'))
+    local_error = error_occurred or local_status == 'error'
     result['local_attempt'] = {
-        'outcome': 'error' if error_occurred else str((agent_result or {}).get('status', 'unavailable')),
+        'outcome': 'error' if local_error else local_status,
         'source_count': len((agent_result or {}).get('evidence') or []),
     }
-    if error_occurred:
-        result['limitations'].append('本地检索运行失败；已切换成未核验的通用模型回答。')
+    if local_error:
+        result['limitations'].insert(0, '本地检索运行失败；已切换成未核验的通用模型回答。')
     else:
-        result['limitations'].append('本地证据未满足完整回答条件；下列模型回答没有沿用本地引文。')
+        result['limitations'].insert(0, '本地证据未满足完整回答条件；下列模型回答没有沿用本地引文。')
     return result

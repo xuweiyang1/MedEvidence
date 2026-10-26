@@ -64,6 +64,14 @@ class DualRouteTests(unittest.TestCase):
                              agent_runner=fail, general_runner=lambda q: GEN_ANSWER)
         self.assertEqual(r['local_attempt']['outcome'], 'error')
 
+    def test_agent_error_status_is_reported_as_error(self):
+        agent = lambda q: {'status': 'error', 'answer': 'failed', 'evidence': [],
+                           'claims': [], 'limitations': ['network']}
+        r = run_web_question('Q', mode='general', prefer_evidence=True,
+                             agent_runner=agent, general_runner=lambda q: GEN_ANSWER)
+        self.assertEqual(r['local_attempt']['outcome'], 'error')
+        self.assertIn('运行失败', r['limitations'][0])
+
     def test_general_export_does_not_claim_evidence(self):
         text = export_question_report('高血压', GEN_ANSWER)
         self.assertIn('未经本地医学文献', text)
