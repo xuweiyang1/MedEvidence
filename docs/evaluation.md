@@ -6,7 +6,7 @@
 ## 1. 离线单元测试
 
 ```powershell
-python scripts/run_agent.py --self-test                     # 61 项，无需 Key / 索引 / SDK 网络
+python scripts/run_agent.py --self-test                     # 75 项，无需 Key / 索引 / SDK 网络
 python -m unittest discover -s web_app/tests -p "test_*.py" # 网页层：队列、双模式、历史迁移
 ```
 
@@ -66,7 +66,7 @@ python -m unittest discover -s web_app/tests -p "test_*.py" # 网页层：队列
 2. 引用字面存在 ≠ 语义支持；后者由 `citation_verifier.py` 判定，仍是模型判断。
 3. AI 预标注 ≠ Gold；需要独立人工复核与仲裁。
 4. `partial` 不等于失败，可能是"有证据但未覆盖全部子问题"的诚实表达。
-5. 模型/网络故障会产生 `insufficient_evidence`，排错前不要把它当算法结论。
+5. 运行故障现在返回 `error`（带 `reason_code`），不再计入"证据不足"；统计拒答率时应把 `error` 排除。
 
 ## 6. 尚未做的
 

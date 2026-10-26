@@ -4,14 +4,16 @@ from __future__ import annotations
 import html
 import sys
 import textwrap
+from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 import streamlit as st
 
 THIS_DIR = Path(__file__).resolve().parent
 if str(THIS_DIR) not in sys.path:
     sys.path.insert(0, str(THIS_DIR))
-from bridge import configuration_status, pmc_url
+from bridge import configuration_status, corpus_stats, pmc_url
 from reporting import export_question_report
 from history_store import HistoryService
 
@@ -43,6 +45,7 @@ st.markdown("""
 .tag-answered {background:#daf4e8;color:#0f7452;}
 .tag-partial {background:#fff1d5;color:#9a661c;}
 .tag-insufficient_evidence {background:#feeaeb;color:#b04650;}
+.tag-error {background:#f8d7da;color:#842029;}
 .tag-other {background:#eef1f8;color:#354b68;}
 .mini-note {font-size:.82rem;color:#738499;line-height:1.7;}
 .reference-card {padding:12px 16px;background:white;border:1px solid #e3eaf1;border-radius:13px;margin-bottom:9px;}
@@ -139,6 +142,7 @@ div[data-testid="stMetric"] {background:white;border:1px solid #e3eaf1;border-ra
 [data-testid="stChatMessage"] .tag-answered {color:#0f7452 !important;-webkit-text-fill-color:#0f7452 !important;}
 [data-testid="stChatMessage"] .tag-partial {color:#9a661c !important;-webkit-text-fill-color:#9a661c !important;}
 [data-testid="stChatMessage"] .tag-insufficient_evidence {color:#b04650 !important;-webkit-text-fill-color:#b04650 !important;}
+[data-testid="stChatMessage"] .tag-error {color:#842029 !important;-webkit-text-fill-color:#842029 !important;}
 [data-testid="stChatMessage"] .reference-id {color:#1f8294 !important;-webkit-text-fill-color:#1f8294 !important;}
 [data-testid="stChatMessage"] .reference-title {color:#1d3547 !important;-webkit-text-fill-color:#1d3547 !important;}
 [data-testid="stChatMessage"] .reference-meta {color:#7a8999 !important;-webkit-text-fill-color:#7a8999 !important;}
@@ -164,6 +168,18 @@ EXAMPLES = [
     "针对静脉血栓栓塞症，现有医学证据对抗凝疗程及延长治疗有哪些限制？",
 ]
 
+
+def _elapsed_seconds(created_at: str | None) -> int | None:
+    """Seconds since the job was enqueued, for a visible wait timer."""
+    try:
+        started = datetime.fromisoformat(str(created_at))
+        if started.tzinfo is None:
+            started = started.replace(tzinfo=timezone.utc)
+        return max(0, int((datetime.now(timezone.utc) - started).total_seconds()))
+    except (TypeError, ValueError):
+        return None
+
+
 @st.cache_resource(show_spinner=False)
 def _history_service() -> HistoryService:
     # A single queue worker is shared across Streamlit browser sessions.
@@ -175,6 +191,9 @@ if "conversation_id" not in st.session_state:
     st.session_state.conversation_id = None
 
 status = configuration_status()
+stats = corpus_stats()
+papers_text = f"{stats['papers']:,}" if stats.get("papers") else "—"
+chunks_text = f"{stats['chunks']:,}" if stats.get("chunks") else "—"
 with st.sidebar:
     st.markdown('<div class="side-logo">✚ MedEvidence</div><div class="side-subtitle">Clinical Evidence · Research Assistant</div>', unsafe_allow_html=True)
     page = st.radio("工作区", ["循证问答", "知识库概览", "项目与使用说明"], label_visibility="collapsed", key="page")
@@ -191,8 +210,8 @@ with st.sidebar:
     st.divider()
     st.caption("数据资产")
     a, b = st.columns(2)
-    a.metric("医学论文", "922")
-    b.metric("证据片段", "42,553")
+    a.metric("医学论文", papers_text)
+    b.metric("证据片段", chunks_text)
     st.caption("固定本地知识库；与 BioASQ 独立实验不混用")
     st.divider()
     if st.button("＋ 新建对话", use_container_width=True):
@@ -250,12 +269,54 @@ if page == "循证问答":
                 st.session_state.pending_question = ex
         st.markdown(" ")
 
+    def show_run_usage(result: dict) -> None:
+        usage = result.get("usage") or {}
+        if not isinstance(usage, dict) or not usage:
+            return
+        sdk = usage.get("sdk") or {}
+        judge = usage.get("judge") or {}
+
+        def fmt(value: Any) -> str:
+            return "—" if value is None else f"{value:,}"
+
+        with st.expander("本次运行信息（模型与用量）", expanded=False):
+            st.markdown("- 生成模型：" + str(usage.get("model") or "未记录"))
+            st.markdown("- 覆盖/核验模型：" + str(usage.get("judge_model") or "未记录"))
+            if sdk.get("requests") is not None:
+                st.markdown("- Agent 模型请求：" + fmt(sdk.get("requests")) + " 次，tokens："
+                            + fmt(sdk.get("total_tokens")))
+            if judge.get("calls") is not None:
+                st.markdown("- 覆盖/核验调用：" + fmt(judge.get("calls")) + " 次，prompt "
+                            + fmt(judge.get("prompt_tokens")) + " / completion "
+                            + fmt(judge.get("completion_tokens")) + " tokens")
+
     def show_answer(result: dict, *, question: str, job_id: str) -> None:
         code = result.get("status", "other")
-        labels = {"answered": "已完成 · Agent 引用核验通过", "partial": "部分回答 · 证据仍有缺口", "insufficient_evidence": "证据不足 · 未生成医学结论", "model_knowledge": "通用模型知识 · 未经本地文献核验"}
+        labels = {"answered": "已完成 · Agent 引用核验通过", "partial": "部分回答 · 证据仍有缺口", "insufficient_evidence": "证据不足 · 未生成医学结论", "error": "运行失败 · 未生成回答", "model_knowledge": "通用模型知识 · 未经本地文献核验"}
         cls = code if code in labels else "other"
         label = labels.get(code, "Agent 返回状态：" + str(code))
         st.markdown(f'<span class="tag tag-{cls}">{html.escape(label)}</span>', unsafe_allow_html=True)
+        if code == "error":
+            st.error("本次运行未完成，未生成医学结论。这是运行故障，不是“文献证据不足”。")
+            detail = []
+            if result.get("reason_code"):
+                detail.append("原因：" + str(result["reason_code"]))
+            if result.get("failure_stage"):
+                detail.append("阶段：" + str(result["failure_stage"]))
+            if detail:
+                st.caption(" · ".join(detail))
+            show_run_usage(result)
+            if result.get("limitations"):
+                with st.expander("故障详情与排查提示", expanded=True):
+                    for item in result["limitations"]:
+                        st.markdown("- " + str(item))
+            st.download_button(
+                "↓ 导出本次问答（Markdown）",
+                data=export_question_report(question, result),
+                file_name=f"MedEvidence_{str(result.get('run_id') or job_id)[:80]}.md",
+                mime="text/markdown", key=f"download_{job_id}",
+            )
+            return
         st.write(str(result.get("answer", "暂无回答内容。")))
         if result.get("answer_origin") == "model_knowledge" or code == "model_knowledge":
             st.warning("这段回答来自语言模型知识，未经过本地医学证据或引用核验，不应当作诊疗依据。")
@@ -282,6 +343,8 @@ if page == "循证问答":
             st.info("这是部分回答。请结合下方来源和限制信息理解，未覆盖的临床维度不能视为已有充分证据。")
         elif code == "insufficient_evidence":
             st.warning("目前未取得足以支持医学结论的引用，系统已选择保守回答。")
+            if result.get("reason_code"):
+                st.caption("判定原因：" + str(result["reason_code"]))
         col1, col2, col3 = st.columns(3)
         rounds = result.get("rounds", 0)
         try:
@@ -319,6 +382,7 @@ if page == "循证问答":
             with st.expander("限制条件与未解决的问题", expanded=code != "answered"):
                 for item in result["limitations"]:
                     st.markdown("- " + str(item))
+        show_run_usage(result)
         st.download_button(
             "↓ 导出本次问答（Markdown）",
             data=export_question_report(question, result),
@@ -342,7 +406,10 @@ if page == "循证问答":
                 elif entry['status'] == 'queued':
                     st.info("已加入后台队列。你可以继续提交其他问题，或打开历史对话。")
                 elif entry['status'] == 'running':
-                    st.info("⏳ 正在检索本地医学证据并生成回答……")
+                    elapsed = _elapsed_seconds(entry.get('created_at'))
+                    suffix = (f"（已等待 {elapsed} 秒，通常 60–180 秒）"
+                              if elapsed is not None else "")
+                    st.info("⏳ 正在检索本地医学证据并生成回答……" + suffix)
                 else:
                     st.error(entry.get('error') or '本次查询未完成。')
         if records and any(item['status'] in ('queued', 'running') for item in records):
@@ -367,8 +434,8 @@ elif page == "知识库概览":
     st.title("医学证据知识库")
     st.caption("本页展示现有 MedEvidence V0.3 项目经过验证的静态资产规模，不是实时在线医学数据库。")
     a, b, c = st.columns(3)
-    a.metric("PMC 文献", "922")
-    b.metric("分块证据", "42,553")
+    a.metric("PMC 文献", papers_text)
+    b.metric("分块证据", chunks_text)
     c.metric("检索引擎", "Hybrid")
     st.divider()
     st.subheader("系统工作流程")
@@ -376,7 +443,9 @@ elif page == "知识库概览":
     st.info("BGE-M3 向量检索与 SQLite FTS5/BM25 联合工作，文献证据实际来源于部署电脑上的本地知识库。")
     st.subheader("工程技术栈")
     st.markdown("Python · Qdrant · SQLite FTS5 · BGE-M3 · OpenAI Agents SDK · 阿里云百炼 Qwen · Streamlit")
-    st.caption("现有索引版本：bge_m3_v3_2_trial_clean。索引无需因安装网页前端而重建。")
+    version_label = stats.get("version") or "未读取"
+    collection_label = stats.get("collection") or "未读取"
+    st.caption(f"现有索引版本：{version_label}（collection：{collection_label}）。索引无需因安装网页前端而重建。")
 
 else:
     st.markdown('<div class="kicker">ABOUT THIS PROJECT</div>', unsafe_allow_html=True)
@@ -393,7 +462,7 @@ else:
     ### 当前网页接入的真实能力
     - **V0.3.0 Agent SDK**：本地混合检索、多轮证据搜索、证据覆盖判断、引用核验及保守拒答。
     - **V0.4.1 严格子问题级支持门控**：已完成独立实验，**尚未集成进这里的正式运行入口**。
-    - **BioASQ 公开基准**：用于研究实验，不与当前 922 篇文献的端到端检索效果混为一谈。
+    - **BioASQ 公开基准**：用于研究实验，不与当前本地文献库的端到端检索效果混为一谈。
 
     ### 使用与隐私
     - 网页默认仅监听本机 `127.0.0.1`，不会自动公开到互联网；问答记录保存在本机 SQLite 文件。

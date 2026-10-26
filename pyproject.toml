@@ -1,0 +1,16 @@
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+extend-exclude = ["data", "outputs", "reports", "docs", "licenses"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "web_app/tests"]
+python_files = ["test_*.py"]
+
+[tool.coverage.run]
+source = ["agent", "web_app"]
+branch = true

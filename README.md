@@ -23,6 +23,7 @@
 | 引用核验 | `agent/citation_verifier.py` 对每条主张做语义支持核验，未通过的引用不计入答案 |
 | 输出契约 | 严格 JSON：`status`、`claims[].citation_ids`、`limitations`；白名单外的引用直接 fail-closed |
 | 可审计 | 每轮事件写入本地 JSON 轨迹，默认只记哈希与结构，不落问题原文 |
+| 失败可区分 | 运行故障返回 `status=error` + `reason_code`，不伪装成"证据不足" |
 | 网页双模式 | 通用科普（明确标注"未经本地文献核验"）/ 严格循证（检索 + 核验 + 拒答） |
 
 ## 架构
@@ -45,7 +46,7 @@
                  │ BGE-M3    │ │ FTS5    │ │ 确定性策略    │
                  └───────────┘ └─────────┘ └──────────────┘
                                    │
-                        引用核验（LLM）→ answered / partial / insufficient_evidence
+                        引用核验（LLM）→ answered / partial / insufficient_evidence / error
 ```
 
 ## 仓库结构
@@ -88,7 +89,7 @@ notepad .env.agent
 ### 3. 先做离线检查（不花钱）
 
 ```powershell
-python scripts/run_agent.py --self-test      # 61 项离线单元测试
+python scripts/run_agent.py --self-test      # 75 项离线单元测试
 python scripts/run_agent.py --sdk-check      # 检查 SDK 组件图
 python scripts/run_agent.py --retriever-check # 检查 Qdrant collection 与 FTS5 表
 ```
@@ -114,6 +115,7 @@ python -m streamlit run web_app/app.py
 | --- | --- | --- |
 | `DASHSCOPE_API_KEY` | — | 百炼 API Key |
 | `MEDEVIDENCE_MODEL` | `qwen-plus` | 模型名 |
+| `MEDEVIDENCE_JUDGE_MODEL` | 同 `MEDEVIDENCE_MODEL` | 覆盖评估/引用核验用模型，可换更快模型降本 |
 | `MEDEVIDENCE_API_BASE` | 百炼兼容地址 | 必须 HTTPS |
 | `MEDEVIDENCE_RETRIEVER` | `qdrant` | `qdrant` 或 `hook` |
 | `MEDEVIDENCE_QDRANT_PATH` | — | Qdrant local 目录（含 `meta.json`） |
@@ -155,7 +157,7 @@ python -m streamlit run web_app/app.py
 
 - 单机、嵌入式 Qdrant，同一时间只能有一个进程打开索引；网页用单 worker 队列规避。
 - 默认 `coverage_threshold=1.0`，多数真实问题会以 `partial` 收尾，这是保守设计而非故障。
-- 语义引用核验仍由 LLM 完成，不能替代专家审阅；模型或网络失败时应视为"未完成"，不要当成"证据不足"。
+- 语义引用核验仍由 LLM 完成，不能替代专家审阅；运行故障会明确返回 `error`，不会冒充证据结论。
 - 问题与必要证据片段会发送到所配置的模型 API；不要输入患者身份信息。
 - 尚无多轮对话记忆：每条问题独立检索。
 

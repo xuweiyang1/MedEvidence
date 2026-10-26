@@ -10,6 +10,7 @@ import re
 import subprocess
 import sys
 import threading
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -50,6 +51,62 @@ def configuration_status(root: Path = CODE_ROOT) -> dict[str, Any]:
         "model": model or "qwen-plus",
         "config_found": config_file is not None,
     }
+
+
+def _configured_value(root: Path, key: str) -> str:
+    """Read one key from .env.agent without loading the rest into os.environ."""
+    for path in (root / ".env.agent", root.parent / ".env.agent"):
+        if not path.is_file():
+            continue
+        try:
+            for raw in path.read_text(encoding="utf-8-sig").splitlines():
+                line = raw.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                name, value = (part.strip() for part in line.split("=", 1))
+                if name == key:
+                    return value.strip("\"'")
+        except OSError:
+            continue
+    return os.getenv(key, "")
+
+
+@lru_cache(maxsize=1)
+def corpus_stats(root: Path = CODE_ROOT) -> dict[str, Any]:
+    """Best-effort corpus sizes from the configured index version.
+
+    Reads only the local manifest and documents.jsonl. Never raises and never
+    loads credentials into this process: the page must stay usable when the
+    index or configuration is absent.
+    """
+    empty = {"papers": None, "chunks": None, "version": None, "collection": None}
+    try:
+        raw_path = _configured_value(root, "MEDEVIDENCE_QDRANT_PATH")
+        if not raw_path:
+            return empty
+        qdrant = Path(raw_path).expanduser()
+        if not qdrant.is_absolute():
+            qdrant = root / qdrant
+        version_dir = qdrant.parent
+        chunks = None
+        manifest = version_dir / "dense_manifest.json"
+        if manifest.is_file():
+            value = json.loads(manifest.read_text(encoding="utf-8")).get("chunk_count")
+            if isinstance(value, int) and value > 0:
+                chunks = value
+        papers = None
+        documents = version_dir.parent.parent / "knowledge" / version_dir.name / "documents.jsonl"
+        if documents.is_file():
+            with documents.open(encoding="utf-8") as handle:
+                papers = sum(1 for _ in handle) or None
+        return {
+            "papers": papers,
+            "chunks": chunks,
+            "version": version_dir.name,
+            "collection": _configured_value(root, "MEDEVIDENCE_COLLECTION") or None,
+        }
+    except Exception:
+        return empty
 
 
 def _extract_agent_json(text: str) -> dict[str, Any]:

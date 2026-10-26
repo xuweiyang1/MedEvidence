@@ -128,6 +128,9 @@ def main() -> int:
             print(json.dumps({
                 "trace_file": str(files[0]),
                 "status": data.get("result", {}).get("status"),
+                "reason_code": data.get("result", {}).get("reason_code"),
+                "failure_stage": data.get("result", {}).get("failure_stage"),
+                "usage": data.get("result", {}).get("usage"),
                 "search_calls": data.get("result", {}).get("rounds"),
                 "successful_searches": len(search_events),
                 "search_hit_counts": [ev.get("hit_count") for ev in search_events],

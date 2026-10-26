@@ -29,6 +29,7 @@ class Config:
     root: Path
     api_key: str
     model: str
+    judge_model: str
     api_base: str
     retriever: str
     hook: str
@@ -59,10 +60,15 @@ class Config:
             load_env(local_file)
         else:
             load_env(root / ".env.agent")
+        model = os.getenv("MEDEVIDENCE_MODEL", "qwen-plus")
+        # Coverage/verification are short judgement tasks; a faster model here
+        # cuts latency and cost without touching the evidence contract.
+        judge_model = os.getenv("MEDEVIDENCE_JUDGE_MODEL", "").strip() or model
         return cls(
             root=root,
             api_key=os.getenv("DASHSCOPE_API_KEY", "") or os.getenv("QWEN_API_KEY", ""),
-            model=os.getenv("MEDEVIDENCE_MODEL", "qwen-plus"),
+            model=model,
+            judge_model=judge_model,
             api_base=os.getenv("MEDEVIDENCE_API_BASE", "https://dashscope.aliyuncs.com/compatible-mode/v1"),
             retriever=os.getenv("MEDEVIDENCE_RETRIEVER", "qdrant").lower(),
             hook=os.getenv("MEDEVIDENCE_RETRIEVER_HOOK", ""),

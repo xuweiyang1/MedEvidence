@@ -25,6 +25,7 @@ from .evidence_evaluator import EvidenceEvaluator
 from .llm_client import QwenLLM, parse_json
 from .models import AgentResult, Coverage, Evidence
 from .adaptive_policy import PolicyDecision, decide_evidence_action
+from .outcome import compose_outcome
 
 
 def digest(value: str) -> str:
@@ -290,7 +291,10 @@ def build_sdk_agents(model):
 
     @function_tool
     async def assess_evidence_coverage(ctx: RunContextWrapper[SDKState], aspects: list[str]) -> str:
-        """Evaluate which question aspects have retrieved textual support; call after searches.
+        """Evaluate evidence coverage AND apply the deterministic next-action policy.
+
+        The policy is local code, so folding it into this tool avoids an extra
+        model round-trip per retrieval round while keeping the decision auditable.
 
         Args:
             aspects: Two to five specific aspects of the user's evidence question.
@@ -307,33 +311,22 @@ def build_sdk_agents(model):
             state.record("tool_error", tool="assess_evidence_coverage", error_type=type(exc).__name__)
             return json.dumps({"error": "coverage_check_failed", "error_type": type(exc).__name__})
         cov = state.coverage
-        state.record("coverage", ratio=cov.ratio, covered_count=len(cov.covered), aspect_count=len(cleaned),
-                     gap_count=len(cov.gaps), conflicting_count=len(cov.conflicts))
-        return json.dumps({"coverage_ratio_heuristic": cov.ratio, "covered": cov.covered,
-                           "gaps": cov.gaps, "conflicts": cov.conflicts,
-                           "remaining_searches": state.config.max_rounds - state.search_calls,
-                           "note": "heuristic source coverage; NOT clinical evidence quality"}, ensure_ascii=False)
-
-    @function_tool
-    async def decide_next_evidence_action(ctx: RunContextWrapper[SDKState]) -> str:
-        """Apply the deterministic V0.3 evidence sufficiency decision policy AFTER coverage.
-
-        It is a transparent retrieval controller, not a medical truth assessor.
-        When action=search_again, use unresolved aspects to formulate a novel
-        query before handing off. Never interpret score as clinical certainty.
-        """
-        state = ctx.context
-        if state.coverage is None or not state.aspects:
-            return json.dumps({"error": "must_assess_coverage_first"})
-        result = decide_evidence_action(
-            aspects=state.aspects, coverage=state.coverage,
-            evidence=list(state.evidence.values()), searches_used=state.search_calls,
-            max_searches=state.config.max_rounds,
+        decision = decide_evidence_action(
+            aspects=cleaned, coverage=cov, evidence=list(state.evidence.values()),
+            searches_used=state.search_calls, max_searches=state.config.max_rounds,
             new_chunks_last_search=state.last_new_chunks,
             no_novelty_streak=state.no_novelty_streak)
-        state.policy_decision = result
-        state.record("adaptive_decision", **result.public())
-        return json.dumps(result.public(include_gap_text=True), ensure_ascii=False)
+        state.policy_decision = decision
+        state.record("coverage", ratio=cov.ratio, covered_count=len(cov.covered), aspect_count=len(cleaned),
+                     gap_count=len(cov.gaps), conflicting_count=len(cov.conflicts))
+        state.record("adaptive_decision", **decision.public())
+        return json.dumps({"coverage_ratio_heuristic": cov.ratio, "covered": cov.covered,
+                           "gaps": cov.gaps, "conflicts": cov.conflicts,
+                           "next_action": decision.action, "reason_code": decision.reason_code,
+                           "unresolved_aspects": list(decision.unresolved_aspects),
+                           "remaining_searches": state.config.max_rounds - state.search_calls,
+                           "note": "heuristic source coverage; NOT clinical evidence quality"},
+                          ensure_ascii=False)
 
     @function_tool
     async def list_retrieved_evidence(ctx: RunContextWrapper[SDKState]) -> str:
@@ -378,20 +371,24 @@ def build_sdk_agents(model):
               "不得对具体患者给出处方、给药剂量或紧急诊疗意见。发现矛盾和证据空缺时必须披露。")
     writer = Agent(
         name="EvidenceWriter",
-        instructions=(shared + "你已从检索规划者接手。必须调用 list_retrieved_evidence 取得引用 ID 和原文。"
+        instructions=(shared + "你已从检索规划者接手。检索工具返回的证据片段与 E 编号已在对话中，可直接引用；"
+                      "仅在确实看不到已登记证据时才调用 list_retrieved_evidence。"
                       "只能基于检索片段输出严格 JSON 对象，不要 Markdown 和解释前缀。格式："
                       '{"status":"answered|partial|insufficient_evidence",'
                       '"claims":[{"text":"独立医学主张","citation_ids":["E1"]}],'
                       '"limitations":["局限说明"]}。'
-                      "最多八条独立医学主张，未找到证据时 status=insufficient_evidence 且 claims=[]。"
+                      "最多八条独立医学主张；每条主张的 citation_ids 必须为 1-3 个已登记 E 编号。"
+                      "未找到证据时 status=insufficient_evidence 且 claims=[]。"
                       "不能输出自由叙述段落绕过主张级引用验证。"
-                      "调用 decide_next_evidence_action 查看当前策略；若返回search_again仍有预算，"
-                      "优先补检尚未覆盖的子问题，不能把代理评分当作临床可靠性。"
+                      "若最近一次 assess_evidence_coverage 返回 next_action=search_again 且仍有预算，"
+                      "先补检并重新评估；否则按 next_action 输出：answer/partial 给出 claims，"
+                      "abstain 时 status=insufficient_evidence、claims=[]。"
+                      "不能把代理评分当作临床可靠性。"
                       "重要：若你执行了新的 search_medical_evidence 或 lookup_medical_document，则必须对最新的证据再次调用"
                       "assess_evidence_coverage；若引用未登记或证据无法验证，只能输出"
                       "insufficient_evidence，claims=[]，不得编造结论。"),
         model=model,
-        tools=[list_retrieved_evidence, lookup_medical_document, search_medical_evidence, assess_evidence_coverage, decide_next_evidence_action],
+        tools=[list_retrieved_evidence, lookup_medical_document, search_medical_evidence, assess_evidence_coverage],
         output_guardrails=[medical_output_guardrail],
     )
     planner = Agent(
@@ -399,13 +396,14 @@ def build_sdk_agents(model):
         instructions=(shared + "你的工作是规划医学问题和检索。若用户明确说出论文标题，"
                       "优先调用 lookup_medical_document 定位该篇论文；如果输入提示已预载论文证据，"
                       "先调用 list_retrieved_evidence 阅读。其他问题调用 search_medical_evidence。"
-                      "之后调用 assess_evidence_coverage 检验 2-5 项子问题的证据覆盖。"
-                      "然后调用 decide_next_evidence_action，并依据返回的 action 执行："
-                      "search_again=围绕unresolved_aspects修改查询补检；answer/partial/abstain=交接Writer。"
+                      "之后调用 assess_evidence_coverage 检验 2-5 项子问题的证据覆盖；"
+                      "该工具会同时返回确定性的 next_action："
+                      "search_again=围绕 unresolved_aspects 修改查询补检；"
+                      "answer/partial/abstain=立即 handoff 给 EvidenceWriter。"
                       "然后必须 handoff 给 EvidenceWriter，不能自行输出最终答案。"
                       "工具预算是硬约束；未找到可靠证据同样移交 EvidenceWriter 说明不足。"),
         model=model,
-        tools=[lookup_medical_document, list_retrieved_evidence, search_medical_evidence, assess_evidence_coverage, decide_next_evidence_action],
+        tools=[lookup_medical_document, list_retrieved_evidence, search_medical_evidence, assess_evidence_coverage],
         handoffs=[writer],
         input_guardrails=[medical_input_guardrail],
     )
@@ -420,7 +418,9 @@ async def run_sdk_agent(question: str, cfg: Config, retriever: Any) -> AgentResu
     if not cfg.api_key or cfg.api_key == "your_key_here":
         raise ValueError("未配置 DASHSCOPE_API_KEY：编辑项目根目录 .env.agent")
     run_id = time.strftime("%Y%m%d-%H%M%S") + "-" + uuid.uuid4().hex[:8]
-    llm = QwenLLM(cfg.api_key, cfg.model, cfg.api_base, cfg.timeout_sec)
+    # Coverage and citation judging are short, high-volume calls; a faster
+    # judge model trims latency/cost without weakening the evidence gates.
+    llm = QwenLLM(cfg.api_key, cfg.judge_model, cfg.api_base, cfg.timeout_sec)
     state = SDKState(cfg, retriever, EvidenceEvaluator(llm))
     collector = LocalMetadataTraceProcessor()
     # Replaces the *default* OpenAI exporter, not additive; avoids leaking texts to OpenAI.
@@ -430,7 +430,7 @@ async def run_sdk_agent(question: str, cfg: Config, retriever: Any) -> AgentResu
                                                    base_url=cfg.api_base,
                                                    timeout=cfg.timeout_sec))
     planner, writer = build_sdk_agents(model)
-    state.record("start", model=cfg.model, collection=cfg.collection,
+    state.record("start", model=cfg.model, judge_model=cfg.judge_model, collection=cfg.collection,
                  user_question=question if cfg.trace_content else "[redacted]", question_hash=digest(question))
     # Named-document questions must not lose their identity when the planner
     # paraphrases the search query. Prefetch exact-title chunks read-only.
@@ -454,6 +454,7 @@ async def run_sdk_agent(question: str, cfg: Config, retriever: Any) -> AgentResu
     raw = ""
     error_type = ""
     passed_handoff = False
+    sdk_usage: dict[str, Any] = {}
     try:
         with trace(workflow_name="MedEvidence Evidence Search", group_id=run_id,
                    metadata={"collection": cfg.collection}):
@@ -467,6 +468,13 @@ async def run_sdk_agent(question: str, cfg: Config, retriever: Any) -> AgentResu
             result = await Runner.run(planner, initial_input, context=state,
                                       max_turns=max(8, cfg.max_rounds * 4 + 4))
         passed_handoff = result.last_agent.name == writer.name
+        try:
+            sdk_usage_obj = getattr(getattr(result, "context_wrapper", None), "usage", None)
+            if sdk_usage_obj is not None:
+                sdk_usage = {key: getattr(sdk_usage_obj, key, None)
+                             for key in ("requests", "input_tokens", "output_tokens", "total_tokens")}
+        except Exception:
+            sdk_usage = {}
         raw = result.final_output if isinstance(result.final_output, str) else str(result.final_output)
         state.record("runner_finish", last_agent=result.last_agent.name,
                      passed_handoff=passed_handoff)
@@ -505,26 +513,33 @@ async def run_sdk_agent(question: str, cfg: Config, retriever: Any) -> AgentResu
         new_chunks_last_search=state.last_new_chunks,
         no_novelty_streak=state.no_novelty_streak)
     state.record("adaptive_final_decision", **final_policy.public())
+    outcome = compose_outcome(
+        accepted=accepted, drafted=drafted, coverage=coverage, policy=final_policy,
+        error_type=error_type, verification_method=str(verification.get("method", "")),
+        coverage_threshold=cfg.coverage_threshold)
+    status = outcome.status
     if accepted:
         answer = "\n".join("- " + c["text"] + " " + "".join("[" + x + "]" for x in c["citation_ids"])
                            for c in accepted)
-        status = ("answered" if drafted.get("status") == "answered" and
-                  final_policy.action == "answer" and
-                  coverage is not None and coverage.ratio >= cfg.coverage_threshold and
-                  not coverage.conflicts and len(accepted) == len(drafted["claims"])
-                  else "partial")
+        dropped = len(drafted["claims"]) - len(accepted)
+        if dropped > 0:
+            limits.insert(0, f"{dropped} 条主张未通过引用核验，已从回答中剔除。")
     else:
-        status = "insufficient_evidence"
-        answer = "未获得足够且通过引用核验的医学证据，因此不生成医学结论。"
-        if error_type:
+        answer = outcome.answer
+        if outcome.status == "error":
             last_guardrail = next((ev for ev in reversed(state.events)
                                    if ev.get("kind") == "output_guardrail"), None)
-            if error_type == "OutputGuardrailTripwireTriggered" and last_guardrail:
+            if outcome.reason_code == "guardrail_rejected" and last_guardrail:
                 limits.insert(0, "输出 Guardrail 拦截：" + str(last_guardrail.get("reason", "unknown")))
-            limits.insert(0, f"Agent 执行未成功完成 ({error_type})，请检查本地轨迹。")
+            if error_type:
+                limits.insert(0, f"Agent 执行未成功完成 ({error_type})，请检查本地轨迹。")
+            elif outcome.reason_code == "verification_failed":
+                limits.insert(0, "引用核验过程失败（模型或网络错误），本次结果按失败处理。")
+            elif outcome.reason_code == "invalid_output":
+                limits.insert(0, "模型未返回符合契约的结构化结果，本次结果按失败处理。")
         elif reason != "ok" and reason != "handoff_not_completed":
             limits.insert(0, "输出结构检查未通过：" + reason)
-    if prefetch_count and status == "insufficient_evidence":
+    if prefetch_count and status in ("insufficient_evidence", "error"):
         # A model's unsupported non-existence explanation is not a valid
         # inference once we have already resolved real chunk IDs in SQLite.
         unverifiable_absence = ("未检索到题为", "未被本库收", "未被本库收录", "可能尚未发表", "该研究可能尚未发表", "尚未发表", "研究不存在")
@@ -532,14 +547,20 @@ async def run_sdk_agent(question: str, cfg: Config, retriever: Any) -> AgentResu
         limits.insert(0, "已在本地数据库中定位到指定论文；本次未能通过证据覆盖或引用校验，不能据此认定该文献未收录。")
     if accepted and final_policy.action != "answer":
         limits.insert(0, "自适应证据决策未满足完整回答条件：" + final_policy.reason_code)
-    state.record("finish", status=status, accepted_claims=len(accepted), search_calls=state.search_calls,
-                 adaptive_action=final_policy.action, adaptive_reason=final_policy.reason_code)
+    state.record("finish", status=status, reason_code=outcome.reason_code,
+                 failure_stage=outcome.failure_stage, accepted_claims=len(accepted),
+                 search_calls=state.search_calls, adaptive_action=final_policy.action,
+                 adaptive_reason=final_policy.reason_code)
     cfg.log_dir.mkdir(parents=True, exist_ok=True)
     trace_file = cfg.log_dir / f"{run_id}.json"
+    usage = {"model": cfg.model, "judge_model": cfg.judge_model,
+             "sdk": sdk_usage, "judge": dict(llm.usage)}
     response = AgentResult(run_id=run_id, status=status, answer=answer, claims=accepted,
                            evidence=state.public_evidence(), limitations=list(dict.fromkeys(limits))[:12],
                            verification=verification, trace_path=str(trace_file),
-                           rounds=state.search_calls, coverage_ratio=coverage.ratio if coverage else 0.0)
+                           rounds=state.search_calls, coverage_ratio=coverage.ratio if coverage else 0.0,
+                           reason_code=outcome.reason_code, failure_stage=outcome.failure_stage,
+                           usage=usage)
     trace_file.write_text(json.dumps({
         "schema": "MedEvidenceSDKTrace_v0.3", "run_id": run_id, "sdk_used": True,
         "sdk_events_metadata_only": collector.events,

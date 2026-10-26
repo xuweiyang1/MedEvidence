@@ -6,6 +6,11 @@ import urllib.error
 import urllib.request
 from typing import Any
 
+REPAIR_PROMPT = (
+    "上一条输出无法解析为 JSON（{error}）。请只输出一个合法 JSON 对象，"
+    "不要 Markdown 代码块、不要任何解释，并保持原任务要求的字段与数量限制。"
+)
+
 
 class LLMError(RuntimeError):
     pass
@@ -42,11 +47,13 @@ class QwenLLM:
         self.model = model
         self.url = api_base.rstrip("/") + "/chat/completions"
         self.timeout = timeout
+        # Accumulated across every successful response; used for cost reporting.
+        self.usage = {"calls": 0, "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
+        self.last_error = ""
 
-    def json(self, system: str, user: str, max_tokens: int = 1400) -> dict[str, Any]:
+    def _post(self, messages: list[dict[str, str]], max_tokens: int) -> str:
         payload = json.dumps({
-            "model": self.model, "messages": [
-                {"role": "system", "content": system}, {"role": "user", "content": user}],
+            "model": self.model, "messages": messages,
             "temperature": 0, "max_tokens": max_tokens,
         }, ensure_ascii=False).encode("utf-8")
         req = urllib.request.Request(self.url, data=payload, headers={
@@ -61,18 +68,44 @@ class QwenLLM:
                 if not choices:
                     raise LLMError("API 无 choices 字段")
                 content = choices[0].get("message", {}).get("content", "")
-                if not isinstance(content, str):
+                if not isinstance(content, str) or not content.strip():
                     raise LLMError("API 无文本 content")
-                return parse_json(content)
+                usage = data.get("usage") or {}
+                self.usage["calls"] += 1
+                for key in ("prompt_tokens", "completion_tokens", "total_tokens"):
+                    value = usage.get(key)
+                    if isinstance(value, int):
+                        self.usage[key] += value
+                return content
             except urllib.error.HTTPError as exc:
-                body = exc.read(500).decode("utf-8", "replace")
-                if exc.code in (429, 500, 502, 503, 504) and attempt < 2:
+                body = exc.read(300).decode("utf-8", "replace")
+                self.last_error = f"HTTP {exc.code}"
+                if exc.code in (408, 409, 429, 500, 502, 503, 504) and attempt < 2:
                     time.sleep(1 + attempt * 2)
                     continue
                 raise LLMError(f"API HTTP {exc.code}: {body}") from exc
-            except (urllib.error.URLError, TimeoutError) as exc:
+            except (urllib.error.URLError, TimeoutError, OSError) as exc:
+                self.last_error = type(exc).__name__
                 if attempt < 2:
                     time.sleep(1 + attempt * 2)
                     continue
                 raise LLMError(f"API 网络错误: {exc}") from exc
         raise LLMError("API 重试次数耗尽")
+
+    def json(self, system: str, user: str, max_tokens: int = 1400) -> dict[str, Any]:
+        messages = [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ]
+        content = self._post(messages, max_tokens)
+        try:
+            return parse_json(content)
+        except LLMError as exc:
+            self.last_error = "json_parse: " + str(exc)[:200]
+            error_text = str(exc)[:200]
+        # One repair round: the model sees its own invalid output plus the parse error.
+        messages.extend([
+            {"role": "assistant", "content": content[:4000]},
+            {"role": "user", "content": REPAIR_PROMPT.format(error=error_text)},
+        ])
+        return parse_json(self._post(messages, max_tokens))

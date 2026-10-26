@@ -75,19 +75,21 @@ python -m streamlit run web_app/app.py
 | 401 / 403 | Key 无效或无该模型权限；到百炼控制台确认模型名与业务空间 |
 | 429 | 额度或并发限制；降低 `MAX_ROUNDS`/`TOP_K` 或稍后重试 |
 | 第一次提问特别慢 | 模型加载 + 首次检索；常驻模式只慢一次 |
-| 网页显示"证据不足"但日志有 `APIConnectionError` | 是网络/模型调用失败，不是证据不足；见下方 |
+| 网页显示"运行失败" | 看 `reason_code` / `failure_stage`：网络、Guardrail 还是引用核验；不是证据不足 |
 | 8501 被占用 | 关闭旧进程，或 `--server.port 8502` |
 | CUDA 报错 / OOM | 改回 `MEDEVIDENCE_DEVICE=cpu`，不要改索引 |
 
-### 关于 `insufficient_evidence`
+### 关于 `error` 与 `insufficient_evidence`
 
-当前实现把"Agent 运行失败"和"证据不足"都落到同一状态，区别写在结果的 `limitations` 里：
+结果状态已经把两类情况分开：
 
-- `Agent 执行未成功完成 (APIConnectionError)` → 网络/API 问题；
-- `输出 Guardrail 拦截：...` → 模型输出结构或引用不合法；
-- 只有"覆盖为空 / 无通过核验的主张"才是真正的证据不足。
+- `error`：本次运行没有完成。`reason_code` 为
+  `agent_runner_error`（网络/SDK）、`guardrail_rejected`（输出结构或引用不合法）、
+  `verification_failed`（引用核验调用异常）或 `invalid_output`（未按契约返回 JSON）。
+- `insufficient_evidence`：运行完成，但没有通过核验的主张——这才是证据层面的结论。
 
-排查顺序：`--trace-diagnose` → 检查网络与 Key → 再怀疑检索。
+排查顺序：看 `reason_code` → `--trace-diagnose` → 检查网络与 Key → 再怀疑检索。
+网页对 `error` 显示红色"运行失败"标签，不会显示成"证据不足"。
 
 ## 7. 数据与索引
 

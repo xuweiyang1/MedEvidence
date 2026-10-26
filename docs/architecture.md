@@ -24,13 +24,13 @@
 3. 若问题里出现明确的论文标题（`extract_explicit_title`），先做一次精确标题预取并登记证据，避免模型误判"论文不存在"。
 4. SDK `Runner` 驱动 `EvidencePlanner`：
    - `search_medical_evidence`：混合检索，登记新块为 `E1..En`；
-   - `assess_evidence_coverage`：把 2–5 个子问题交给 LLM 判断哪些被哪些证据覆盖；
-   - `decide_next_evidence_action`：确定性策略给出下一步动作；
+   - `assess_evidence_coverage`：把 2–5 个子问题交给 LLM 判断覆盖，并在同一次工具返回中附带确定性 `next_action`；
    - 重复直到预算耗尽或策略允许作答，然后 handoff 给 `EvidenceWriter`。
-5. `EvidenceWriter` 只输出严格 JSON（`status` / `claims` / `limitations`），不写自由叙述。
+5. `EvidenceWriter` 只输出严格 JSON（`status` / `claims` / `limitations`），每条主张 1–3 个引用 ID，不写自由叙述。
 6. 输出 guardrail 校验 JSON 结构、引用白名单、是否在最后一次检索后重新评估过覆盖；不通过即 tripwire。
 7. `CitationVerifier` 对每条主张核验支持性，未通过的主张被剔除；全部通过且策略允许，才是 `answered`。
-8. 结果、事件与脱敏轨迹写入 `outputs/agent_runs_v030/<run_id>.json`。
+8. `compose_outcome()` 决定最终状态：运行故障（网络、SDK、guardrail、核验崩溃）返回 `error`，只有真正缺少可核验证据才返回 `insufficient_evidence`。
+9. 结果、事件、token 用量与脱敏轨迹写入 `outputs/agent_runs_v030/<run_id>.json`。
 
 ## 3. 为什么这些约束是"硬"的
 
@@ -50,11 +50,13 @@
 | --- | --- | --- |
 | `answered` | 主张全部通过核验，且策略允许作答 | 医学结论一定正确 |
 | `partial` | 有已核验主张，但覆盖或策略仍显示缺口 | 失败；它可能是有用的部分证据 |
-| `insufficient_evidence` | 没有通过核验的主张，或覆盖为空 | 文献不存在；也可能是检索/网络问题 |
+| `insufficient_evidence` | 运行完成，但没有通过核验的主张 | 文献不存在 |
+| `error` | 运行本身失败：网络、SDK、guardrail、引用核验异常 | 证据不足，或文献不支持 |
 | `model_knowledge` | 仅网页通用模式：模型知识，无本地证据 | 循证结论 |
 
-> 注意：当前实现中，Agent 运行异常（如模型 API 连接失败）也会落到
-> `insufficient_evidence`，并在 `limitations` 里写明"Agent 执行未成功完成"。阅读结果时应先看限制条件。
+> `error` 会附带 `reason_code`（`agent_runner_error` / `guardrail_rejected` /
+> `verification_failed` / `invalid_output`）与 `failure_stage`，网页以红色"运行失败"呈现。
+> 只有 `insufficient_evidence` 才表示"证据层面没有形成结论"。
 
 ## 5. 检索细节
 

@@ -40,3 +40,20 @@
 - 清理：移除 `.bak` 文件、乱码文件名、冻结 SDK 目录（保留在 Git 历史）、重复的 AI 复核 CSV。
 - 新增 `.env.agent.example`、`requirements.txt`、`run_web.bat`，补全 `.gitignore`。
 - 研究产物归位：`reports/targeted_5q_audit/`、`reports/v041_gapaware_15cases_summary.json`。
+
+## 2026-10-26 — 正确性、时延与可观测性优化
+
+- **状态语义拆分**：新增 `agent/outcome.py`，运行故障返回 `status=error` 与
+  `reason_code`/`failure_stage`，不再伪装成 `insufficient_evidence`；网页增加红色"运行失败"分支。
+- **JSON 修复轮**：`QwenLLM` 在解析失败时把错误回喂模型一次，减少偶发格式失败导致的整轮丢弃。
+- **少一轮模型调用**：`assess_evidence_coverage` 直接返回确定性 `next_action`，
+  移除独立的 `decide_next_evidence_action` 工具；Writer 不再强制调用 `list_retrieved_evidence`，
+  并在指令中明确"每条主张 1–3 个引用 ID"。
+- **分角色模型**：新增 `MEDEVIDENCE_JUDGE_MODEL`，覆盖评估/引用核验可用更快模型。
+- **用量统计**：记录 Agent 与判定模型的请求数/tokens，写入轨迹并在网页"本次运行信息"展示。
+- **动态语料规模**：网页从索引 manifest 与 `documents.jsonl` 读取文献/块数，不再硬编码 922 / 42,553。
+- **等待计时**：运行中的问题显示已等待秒数，减少"卡住了"的错觉。
+- **诊断增强**：`--trace-diagnose` 输出 `reason_code`、`failure_stage` 与 token 用量。
+- **测试与工程化**：新增 outcome、LLM 修复轮、配置默认值测试（61 → 75 项）；
+  新增 `pyproject.toml`（ruff/pytest/coverage 配置）、`requirements-dev.txt` 与 GitHub Actions 离线测试。
+- 文档同步：README、架构、评测、运行手册与网页说明更新状态语义与配置项。

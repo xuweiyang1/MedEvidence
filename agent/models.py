@@ -51,6 +51,11 @@ class AgentResult:
     trace_path: str
     rounds: int
     coverage_ratio: float
+    # Why the run ended the way it did; empty for answered/partial.
+    reason_code: str = ""
+    failure_stage: str = ""
+    # Token/request accounting: {"sdk": {...}, "judge": {...}, "model": ...}
+    usage: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
