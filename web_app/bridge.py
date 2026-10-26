@@ -189,15 +189,25 @@ def pmc_url(pmcid: str) -> str | None:
 
 def render_markdown_report(question: str, result: dict[str, Any]) -> str:
     """Text export excludes credentials, local trace path, and hidden evaluator inputs."""
+    status = str(result.get("status", "unknown"))
+    overview = [
+        f"- 状态：{status}",
+        f"- 检索次数：{result.get('rounds', 'unknown')}",
+        f"- 启发式证据覆盖率：{result.get('coverage_ratio', 0)}",
+    ]
+    if result.get("reason_code"):
+        overview.insert(1, f"- 原因代码：{result['reason_code']}")
+    if result.get("failure_stage"):
+        overview.insert(2, f"- 失败阶段：{result['failure_stage']}")
     lines = [
         "# MedEvidence 循证问答报告", "",
         "## 问题", question.strip(), "", "## 回答", str(result.get("answer", "")), "",
-        "## 检索结果概览",
-        f"- 状态：{result.get('status', 'unknown')}",
-        f"- 检索次数：{result.get('rounds', 'unknown')}",
-        f"- 启发式证据覆盖率：{result.get('coverage_ratio', 0)}", "",
+        "## 检索结果概览", *overview, "",
         "## 证据来源",
     ]
+    if status == "error":
+        lines.insert(1, "> **本次运行未完成（运行故障），未生成医学结论。**")
+        lines.insert(2, "")
     for e in result.get("evidence", []):
         label = f"[{e.get('id', '?')}] {e.get('title') or '未标注标题'}"
         url = pmc_url(e.get("pmcid") or "")

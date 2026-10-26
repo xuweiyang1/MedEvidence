@@ -53,7 +53,7 @@
 - **用量统计**：记录 Agent 与判定模型的请求数/tokens，写入轨迹并在网页"本次运行信息"展示。
 - **动态语料规模**：网页从索引 manifest 与 `documents.jsonl` 读取文献/块数，不再硬编码 922 / 42,553。
 - **等待计时**：运行中的问题显示已等待秒数，减少"卡住了"的错觉。
-- **诊断增强**：`--trace-diagnose` 输出 `reason_code`、`failure_stage` 与 token 用量。
+- **诊断增强**：`--trace-diagnose` 输出 `reason_code`、`failure_stage` 与 token 用量；导出报告对 `error` 标明原因。
 - **测试与工程化**：新增 outcome、LLM 修复轮、配置默认值测试（61 → 75 项）；
   新增 `pyproject.toml`（ruff/pytest/coverage 配置）、`requirements-dev.txt` 与 GitHub Actions 离线测试。
 - 文档同步：README、架构、评测、运行手册与网页说明更新状态语义与配置项。

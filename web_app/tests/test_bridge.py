@@ -77,5 +77,14 @@ class BridgeTests(unittest.TestCase):
                     run_question('demo', root=root)
                 self.assertNotIn('API_KEY_DO_NOT_LEAK', str(ctx.exception))
 
+    def test_error_report_marks_failure(self):
+        report = render_markdown_report("问题", {
+            "status": "error", "answer": "运行未完成", "reason_code": "agent_runner_error",
+            "failure_stage": "agent_runner", "limitations": ["网络错误"],
+        })
+        self.assertIn("运行故障", report)
+        self.assertIn("agent_runner_error", report)
+        self.assertIn("agent_runner", report)
+
 if __name__ == '__main__':
     unittest.main()
