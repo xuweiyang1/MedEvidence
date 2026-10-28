@@ -184,7 +184,11 @@ python -m streamlit run web_app/app.py
 ## 版本说明
 
 当前代码对应 Agent V0.3.1 + 网页双模式 V3。旧版 V0.2.x 冻结 SDK 已从工作树移除，但仍保留在 Git 历史（首个提交）中；如需对照，可 `git show 586dce3 --stat`。
+## 贡献者
 
+- [xuweiyang1](https://github.com/xuweiyang1) — 项目发起与主体实现
+- [Unique229](https://github.com/Unique229)
+- [zhongfeiyang-y](https://github.com/zhongfeiyang-y) — 文档与测试
 ## 许可与引用
 
 本仓库为比赛/研究项目，第三方数据的许可各自独立（见 `licenses/`）。引用本系统产出的结论时，请同时核对原始文献；不要把它当作临床决策依据。
